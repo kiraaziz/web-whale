@@ -40,3 +40,4 @@ next-env.d.ts
 # /.env
 
 certificates
+public/template

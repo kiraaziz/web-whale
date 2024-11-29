@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { DevicesProvider, useEditor } from '@grapesjs/react'
-import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet } from 'lucide-react'
-import React, { useState } from 'react'
+import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet, Download } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 
-export default function Screens() {
+export default function Screens({ isPreview, setIsPreview }: any) {
     const editor = useEditor()
-    const [isPreview, setIsPreview] = useState(false)
     const [isOutlineActive, setIsOutlineActive] = useState(false)
 
     const icons: any = {
@@ -34,6 +33,17 @@ export default function Screens() {
         setIsOutlineActive(!isOutlineActive)
     }
 
+    editor.on('run:preview', () => {
+        console.log('Preview mode activated');
+        // Add your logic for when preview is turned on
+    });
+
+    // Listen for when preview mode is deactivated
+    editor.on('stop:preview', () => {
+        console.log('Preview mode deactivated');
+        // Add your logic for when preview is turned off
+    });
+
     return (
         <div className='flex items-center justify-center gap-2 flex-1'>
             <DevicesProvider>
@@ -56,7 +66,6 @@ export default function Screens() {
                     </div>
                 )}
             </DevicesProvider>
-
             <div className="flex items-center gap-1 px-10">
                 <Button
                     size="icon"
@@ -77,10 +86,16 @@ export default function Screens() {
                         !isPreview && "text-foreground/60",
                         "transition-all duration-200"
                     )}
-                    onClick={handlePreview}
-                    title="Preview website"
-                >
+                    onClick={handlePreview}>
                     <Eye size={20} />
+                </Button>
+                <Button
+                    size="icon"
+                    variant={"outline"}
+                    onClick={() => {
+                        editor.runCommand('gjs-export-zip')
+                    }}>
+                    <Download size={20} />
                 </Button>
             </div>
         </div>
