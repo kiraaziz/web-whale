@@ -1,14 +1,12 @@
-import { FetchRequest, FetchResponse } from "@/types/client"
 import { useRouter } from "next/navigation"
 import { useTransition } from "react"
-import { toast } from "sonner"
 
 export function useFetch(
     path: string,
     method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH",
     action: (data: any) => void,
     canRefrech = true
-): FetchRequest {
+): any {
 
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
@@ -31,22 +29,22 @@ export function useFetch(
                     throw new Error(`HTTP error! Status: ${req.status}`);
                 }
 
-                const res: FetchResponse = await req.json()
+                const res: any = await req.json()
 
 
                 if (!res.success) {
-                    showInfo && toast.error(`🥲 ${res.message}`)
+                    showInfo && alert(`🥲 ${res.message}`)
                 } else {
                     if (canRefrech) {
                         router.refresh()
                     }
-                    showInfo && toast.success(`✨🎉 ${res.message}`)
+                    showInfo && alert(`✨🎉 ${res.message}`)
                     action(res)
                 }
 
             } catch (error: any) {
                 console.error(error)
-                toast.error(`🥲 ${error.message}`)
+                alert(`🥲 ${error.message}`)
             }
         })
     }

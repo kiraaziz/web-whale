@@ -1,9 +1,6 @@
 import { ThemeProvider } from "@/components/providers/theme"
 import { cn } from "@/lib/utils"
-import { Node } from "@/types/client"
-import { Toaster } from "@/components/ui/sonner"
 import { Nunito } from 'next/font/google'
-import SessionProviderClient from "@/components/providers/session"
 import "@/lib/globals.css"
 
 const nunito = Nunito({
@@ -11,7 +8,7 @@ const nunito = Nunito({
   weight: ["200", "300", "500", "400", "600", "700", "800", "900"]
 })
 
-export default async function RootLayout({ children }: Node) {
+export default async function RootLayout({ children }: any) {
 
   return (
     <html lang="en">
@@ -27,10 +24,7 @@ export default async function RootLayout({ children }: Node) {
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster position="top-center" />
-          <SessionProviderClient>
-            {children}
-          </SessionProviderClient>
+          {children}
         </ThemeProvider>
       </body>
     </html >

@@ -1,16 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-import { createPreset } from 'fumadocs-ui/tailwind-plugin';
 
 const tremor = {
-  presets: [createPreset()],
   darkMode: ['class'],
   content: [
-    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}', // Tremor module
-    './node_modules/fumadocs-ui/dist/**/*.js',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './content/**/*.mdx',
-    './mdx-components.tsx',
   ],
   theme: {
     transparent: 'transparent',
