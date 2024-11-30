@@ -8,7 +8,7 @@ export default function page() {
 
   return (
     <div className='w-full h-[100svh] flex lg:items-center xl:mt-20 flex-col p-5'>
-      <div className="w-full max-w-3xl p-5">
+      <div className="w-full max-w-3xl lg:p-5">
         <div className='mb-1 h-12 w-12 flex items-center justify-center'>
           <Logo />
         </div>
