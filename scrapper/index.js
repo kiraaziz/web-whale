@@ -308,6 +308,10 @@ async function processUrl(url) {
 
 
 // Example usage:
-processUrl('https://mobirise.com/extensions/shopm5/furniture-store/', "essencem5")
+// processUrl('https://mobirise.com/extensions/shopm5/furniture-store/', "essencem5")
+//     .then(result => console.log(result))
+//     .catch(error => console.error(error))
+
+processUrl('https://preview.colorlib.com/theme/alime/', "essencem5")
     .then(result => console.log(result))
     .catch(error => console.error(error))
