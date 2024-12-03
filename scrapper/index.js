@@ -25,7 +25,7 @@ async function generateSectionHtmlFiles(processedSections, id, cssFiles, cssImag
     // Process each section
     for (const section of processedSections) {
 
-        console.log(Date.now()  + " start create preview")
+        console.log(Date.now() + " start create preview")
 
         const htmlContent = generateHtmlContent(section.replaceAll(`template/${id}`, ".."), cssFiles, jsFiles, baseDir);
 
@@ -37,7 +37,7 @@ async function generateSectionHtmlFiles(processedSections, id, cssFiles, cssImag
         // Add the output path to the array
         generatedPaths.push(pathName.replaceAll("html", "png"));
 
-        console.log(Date.now()  + " end with preview")
+        console.log(Date.now() + " end with preview")
 
     }
 
@@ -121,7 +121,7 @@ async function processUrl(url, name) {
 
         const sections = html.match(/<section[^>]*>[\s\S]*?<\/section>/g) || [];
 
-        console.log(Date.now()  + " load site")
+        console.log(Date.now() + " load site")
         async function processCssFiles(cssContent, baseUrl) {
             const fontRegex = /@font-face\s*{[^}]*?src\s*:([^}]*?)}/g;
             const bgImageRegex = /background(?:-image)?\s*:\s*url\(['"]?([^'")]+)['"]?\)/g;
@@ -150,7 +150,7 @@ async function processUrl(url, name) {
                         const fontPath = path.join(fontsDir, fileName);
 
                         fs.writeFileSync(fontPath, Buffer.from(arrayBuffer));
-                        console.log(Date.now()  + " download font file")
+                        console.log(Date.now() + " download font file")
 
                         cssContent = cssContent.replace(urlMatch[1], `../fonts/${fileName}`);
                         fontFiles.push(`../fonts/${fileName}`);
@@ -199,7 +199,7 @@ async function processUrl(url, name) {
                 const fileName = generateRandomName('.css');
                 fs.writeFileSync(path.join(cssDir, fileName), processedCss.replaceAll("!important", ""));
 
-                console.log(Date.now()  + " download css file")
+                console.log(Date.now() + " download css file")
 
                 return {
                     cssPath: `/template/${id}/css/${fileName}`,
@@ -212,58 +212,58 @@ async function processUrl(url, name) {
             }
         });
 
-        // const jsPromises = jsUrls.map(async (jsUrl) => {
-        //     try {
-        //         const absoluteUrl = new URL(jsUrl, url).href;
-        //         const response = await fetch(absoluteUrl);
-        //         if (!response.ok) throw new Error(`Failed to fetch JS: ${response.statusText}`);
-        //         const jsContent = await response.text();
-        //         const fileName = generateRandomName('.js');
-        //         fs.writeFileSync(path.join(jsDir, fileName), jsContent);
+        const jsPromises = jsUrls.map(async (jsUrl) => {
+            try {
+                const absoluteUrl = new URL(jsUrl, url).href;
+                const response = await fetch(absoluteUrl);
+                if (!response.ok) throw new Error(`Failed to fetch JS: ${response.statusText}`);
+                const jsContent = await response.text();
+                const fileName = generateRandomName('.js');
+                fs.writeFileSync(path.join(jsDir, fileName), jsContent);
 
-        //         console.log(Date.now()  + " download js file")
+                console.log(Date.now() + " download js file")
 
-        //         return `/template/${id}/js/${fileName}`;
-        //     } catch (error) {
-        //         console.error(`Error downloading JS: ${jsUrl}`, error);
-        //         return null;
-        //     }
-        // });
+                return `/template/${id}/js/${fileName}`;
+            } catch (error) {
+                console.error(`Error downloading JS: ${jsUrl}`, error);
+                return null;
+            }
+        });
 
-        // const imgPromises = imgUrls.map(async (imgUrl) => {
-        //     try {
-        //         const absoluteUrl = new URL(imgUrl, url).href;
-        //         const response = await fetch(absoluteUrl);
-        //         if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
-        //         const arrayBuffer = await response.arrayBuffer();
-        //         const contentType = response.headers.get('content-type');
-        //         const extension = contentType.split('/')[1] || 'jpg';
-        //         const fileName = generateRandomName(`.${extension}`);
-        //         fs.writeFileSync(path.join(imgDir, fileName), Buffer.from(arrayBuffer));
+        const imgPromises = imgUrls.map(async (imgUrl) => {
+            try {
+                const absoluteUrl = new URL(imgUrl, url).href;
+                const response = await fetch(absoluteUrl);
+                if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+                const arrayBuffer = await response.arrayBuffer();
+                const contentType = response.headers.get('content-type');
+                const extension = contentType.split('/')[1] || 'jpg';
+                const fileName = generateRandomName(`.${extension}`);
+                fs.writeFileSync(path.join(imgDir, fileName), Buffer.from(arrayBuffer));
 
-        //         console.log(Date.now()  + " download img file")
+                console.log(Date.now() + " download img file")
 
-        //         return {
-        //             originalUrl: imgUrl,
-        //             newPath: `template/${id}/img/${fileName}`,
-        //         };
-        //     } catch (error) {
-        //         console.error(`Error downloading image: ${imgUrl}`, error);
-        //         return null;
-        //     }
-        // });
+                return {
+                    originalUrl: imgUrl,
+                    newPath: `template/${id}/img/${fileName}`,
+                };
+            } catch (error) {
+                console.error(`Error downloading image: ${imgUrl}`, error);
+                return null;
+            }
+        });
 
-        console.log(Date.now()  + " start download css")
+        console.log(Date.now() + " start download css")
         const cssResults = (await Promise.all(cssPromises)).filter(result => result);
         // const cssResults = [].filter(result => result);
 
-        console.log(Date.now()  + " start download js")
-        // const jsFiles = (await Promise.all(jsPromises)).filter(file => file);
-        const jsFiles = [].filter(file => file);
+        console.log(Date.now() + " start download js")
+        const jsFiles = (await Promise.all(jsPromises)).filter(file => file);
+        // const jsFiles = [].filter(file => file);
 
-        console.log(Date.now()  + " start download img")
-        // const imgFiles = (await Promise.all(imgPromises)).filter(file => file);
-        const imgFiles = [].filter(file => file);
+        console.log(Date.now() + " start download img")
+        const imgFiles = (await Promise.all(imgPromises)).filter(file => file);
+        // const imgFiles = [].filter(file => file);
 
         const cssFiles = cssResults.map(result => result.cssPath);
         const fontFiles = cssResults.flatMap(result => result.fontFiles);
@@ -283,7 +283,7 @@ async function processUrl(url, name) {
         });
 
 
-        console.log(Date.now()  + " start preview")
+        console.log(Date.now() + " start preview")
 
         const previews = await generateSectionHtmlFiles(processedSections, id, cssFiles, imgFiles, jsFiles, baseDir);
 
@@ -323,6 +323,9 @@ async function processUrl(url, name) {
             name,
             styles: cssFiles,
             scripts: jsFiles,
+            previews: previews.map((v)=>{
+                return `/template/${id}/preview/${v}`
+            }),
             sectionsCount: sections.length,
             pluginPath: `/template/${id}/${pluginFileName}`,
             pluginPathScript: `<script src="/template/${id}/${pluginFileName}"></script>`,
@@ -339,7 +342,7 @@ async function captureScreenshots(rootPath) {
     const browserPath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     const browser = await puppeteer.launch({
         executablePath: browserPath,
-        headless: !true
+        headless: true
     });
 
     try {
@@ -361,47 +364,89 @@ async function captureScreenshots(rootPath) {
             // Open the HTML file
             await page.goto(`file://${htmlFilePath}`);
 
-            // Wait for the section element to load
-            await page.waitForSelector('section');
+            try {
+                // Wait for the section element to load
+                await page.waitForSelector('section');
 
-            const lastSection = await page.$('section:last-of-type');
+                const lastSection = await page.$('section:last-of-type');
 
-            // Take a screenshot of the last <section> only
-            await lastSection.screenshot({ path: imageFilePath });
+                // Take a screenshot of the last <section> only
+                await lastSection.screenshot({ path: imageFilePath });
 
-            // Log the screenshot saved path
-            // Close the page
-            fs.unlinkSync(htmlFilePath);
+                // Log the screenshot saved path
+                // Close the page
+                fs.unlinkSync(htmlFilePath);
+            } catch (error) {
+                try {
+                    // Wait for the section element to load
+                    await page.waitForSelector('nav');
+
+                    const lastSection = await page.$('nav:last-of-type');
+
+                    // Take a screenshot of the last <section> only
+                    await lastSection.screenshot({ path: imageFilePath });
+
+                    // Log the screenshot saved path
+                    // Close the page
+                    fs.unlinkSync(htmlFilePath);
+                } catch (error) {
+                    console.error('Error while capturing screenshots: ');
+                }
+            }
             await page.close();
         }
     } catch (error) {
-        console.error('Error while capturing screenshots:', error);
+        console.error('Error while capturing screenshots:');
     } finally {
         // Close the browser
         await browser.close();
     }
 }
 
-processUrl('https://mobirise.com/extensions/formulam5/livedemoblocks.html', "Carem5")
-    .then(result => console.log(result))
-    .catch(error => console.error(error))
+async function processAndSaveResults() {
 
-// processUrl('https://mobirise.com/extensions/stockm5/demoblocks.html', "Carem5")
-//     .then(result => console.log(result))
-//     .catch(error => console.error(error))
+    const urls = [
+        { url: 'https://mobirise.com/extensions/stockm5/demoblocks.html', name: 'stockm5' },
+        { url: 'https://mobirise.com/extensions/placem5/demoblocks.html', name: 'placem5' },
+        { url: 'https://mobirise.com/extensions/valuem5/demoblocks.html', name: 'valuem5' },
+        { url: 'https://mobirise.com/extensions/carem5/demoblocks.html', name: 'Carem5' },
+        { url: 'https://mobirise.com/extensions/servicem5/demoblocks.html', name: 'servicem5' },
+        { url: 'https://mobirise.com/extensions/talkm5/livedemoblocks.html', name: 'talkm5' },
+        { url: 'https://mobirise.com/extensions/flexm5/demoblocks.html', name: 'flexm5' },
+        { url: 'https://mobirise.com/extensions/progressm5/demoblocks.html', name: 'progressm5' },
+        { url: 'https://mobirise.com/extensions/flavorm5/demoblocks.html', name: 'flavorm5' },
+        { url: 'https://mobirise.com/extensions/decorm5/demoblocks.html', name: 'decorm5' },
+        { url: 'https://mobirise.com/extensions/ridem5/demoblocks.html', name: 'ridem5' },
+        { url: 'https://mobirise.com/extensions/replym5/demoblocks.html', name: 'replym5' },
+        { url: 'https://mobirise.com/extensions/healthm5/demoblocks.html', name: 'healthm5' },
+        { url: 'https://mobirise.com/extensions/printm5/demoblocks.html', name: 'printm5' },
+        { url: 'https://mobirise.com/extensions/trustm5/demoblocks.html', name: 'trustm5' },
+        { url: 'https://mobirise.com/extensions/energym5/demoblocks.html', name: 'energym5' },
+        { url: 'https://mobirise.com/extensions/tutorm5/livedemoblock.html', name: 'tutorm5' },
+        { url: 'https://mobirise.com/extensions/devicem5/demoblocks.html', name: 'devicem5' },
+        { url: 'https://mobirise.com/extensions/immersem5/demoblocks.html', name: 'immersem5' },
+        { url: 'https://mobirise.com/extensions/strategym5/demoblocks.html', name: 'strategym5' },
+        { url: 'https://mobirise.com/extensions/forwardm5/demoblocks.html', name: 'forwardm5' },
+        { url: 'https://mobirise.com/extensions/essencem5/demoblocks.html', name: 'essencem5' },
+        { url: 'https://mobirise.com/extensions/modelm5/demoblocks.html', name: 'modelm5' },
+        { url: 'https://mobirise.com/extensions/buildm5/livedemoblocks.html', name: 'buildm5' },
+    ];
 
-// processUrl('https://mobirise.com/extensions/placem5/demoblocks.html', "Carem5")
-//     .then(result => console.log(result))
-//     .catch(error => console.error(error))
+    try {
+        // Map over URLs and process each with processUrl
+        const results = await Promise.all(
+            urls.map(({ url, name }) =>
+                processUrl(url, name).catch(error => ({ error: error.message, url }))
+            )
+        );
 
-// processUrl('https://mobirise.com/extensions/valuem5/demoblocks.html', "Carem5")
-//     .then(result => console.log(result))
-//     .catch(error => console.error(error))
+        // Save the results to a JSON file
+        await fs.writeFileSync('results/'+generateRandomName(".json"), JSON.stringify(results, null, 2), 'utf-8');
+        console.log('Results saved to results.json');
+    } catch (error) {
+        console.error('Error processing URLs:', error);
+    }
+}
 
-// processUrl('https://mobirise.com/extensions/carem5/demoblocks.html', "Carem5")
-//     .then(result => console.log(result))
-//     .catch(error => console.error(error))
 
-// processUrl('https://mobirise.com/extensions/carem5/', "essencem5")
-//     .then(result => console.log(result))
-//     .catch(error => console.error(error))
+processAndSaveResults()

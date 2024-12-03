@@ -55,6 +55,7 @@ export default function EditorLayout({ values, template }: any) {
     console.log('Active panel name:', activePanelName);
   });
 
+  const [showEditors, setShowEditors] = useState(true)
 
   return (
     <GjsEditor
@@ -73,12 +74,12 @@ export default function EditorLayout({ values, template }: any) {
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
           {editor && <Timers projectName={"website"} />}
-          {editor && <Screens isPreview={isPreview} setIsPreview={setIsPreview} />}
+          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} />}
 
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
-          <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />
-          <div className='h-full border-r bg-muted/20 w-[20em] magicScroll'>
+          {showEditors && <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />}
+          <div className={`h-full border-r bg-muted/20 w-[20em] magicScroll ${!showEditors && "hidden"}`}>
             {(selectedElement === "layers") && <LayersProvider>
               {props => <LayerManager {...props} />}
             </LayersProvider>}
@@ -100,8 +101,8 @@ export default function EditorLayout({ values, template }: any) {
               </StylesProvider>
             </div>
           </div>
-          <div className=' w-full overflow-hidden bg-card p-10 flex-1'>
-            <div className='h-full w-full bg-background gjs-column-m rounded-2xl shadow-xl border overflow- p-5'>
+          <div className={cn(showEditors ? "p-10" : "p-5" , ' w-full overflow-hidden bg-card flex-1')}>
+            <div className={cn(showEditors ? "p-5" : "p-0", 'h-full w-full bg-background gjs-column-m rounded-2xl shadow-xl border overflow-')}>
               <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} />
             </div>
           </div>
@@ -127,4 +128,3 @@ const plugins = [
   ,
 ]
 
- 

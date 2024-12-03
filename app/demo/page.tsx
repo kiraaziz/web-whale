@@ -1,15 +1,15 @@
 "use client"
 import EditorLayout from '@/components/editor/EditorLayout'
 import { useState } from 'react'
-import { totalBlocks } from "@/scrapper/resluts"
+import totalBlocks from "@/scrapper/results/be3d0ad5efd9429c.json"
 
 export default function Page() {
 
-  
+
   const [v, setV] = useState(null)
   const [t1, setT1] = useState<any>(null);
 
-  
+
   const handleSelect = async (e: any) => {
     try {
       const pluginPath = `${e.pluginPath}`; // Ensure correct public path
@@ -38,12 +38,17 @@ export default function Page() {
   };
 
   if (!v) return (
-    <div className='w-full h-full flex items-center justify-center gap-2'>
-      {totalBlocks.map((e: any, index: number) => (
-        <button key={index} onClick={() => handleSelect(e)}>
-          {e.name}
-        </button>
-      ))}
+    <div className="h-screen w-screen overflow-auto">
+      <div className='p-5 grid grid-cols-3 gap-2 overflow-auto'>
+        {totalBlocks.map((e: any, index: number) => (
+          <div key={index} onClick={() => handleSelect(e)} className='p-2 bg-muted/20 rounded border h-60 overflow-hidden'>
+            {e.previews.map((i: any) => (
+              <img src={i} alt="" className='w-full' />
+            ))}
+            {e.name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 

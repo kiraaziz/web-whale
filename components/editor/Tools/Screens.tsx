@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { DevicesProvider, useEditor } from '@grapesjs/react'
-import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet, Download } from 'lucide-react'
+import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet, Download, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
-export default function Screens({ isPreview, setIsPreview }: any) {
+export default function Screens({ isPreview, setIsPreview, showEditors, setShowEditors }: any) {
     const editor = useEditor()
     const [isOutlineActive, setIsOutlineActive] = useState(false)
 
@@ -46,6 +46,21 @@ export default function Screens({ isPreview, setIsPreview }: any) {
 
     return (
         <div className='flex items-center justify-center gap-2 flex-1'>
+            <div className="flex items-center gap-1  px-5">
+                <Button
+                    size="icon"
+                    variant={showEditors ? "default" : "outline"}
+                    className={cn(
+                        !showEditors && "text-foreground/60",
+                        "transition-all duration-200"
+                    )}
+                    onClick={() => setShowEditors(!showEditors)}
+                >
+                    {showEditors ?
+                        <PanelRightClose size={20} />
+                        : <PanelRightOpen size={20} />}
+                </Button>
+            </div>
             <DevicesProvider>
                 {({ selected, select, devices }) => (
                     <div className='flex items-center justify-center gap-1 flex-1'>
@@ -66,7 +81,7 @@ export default function Screens({ isPreview, setIsPreview }: any) {
                     </div>
                 )}
             </DevicesProvider>
-            <div className="flex items-center gap-1 px-10">
+            <div className="flex items-center gap-1 px-5">
                 <Button
                     size="icon"
                     variant={isOutlineActive ? "default" : "outline"}
