@@ -24,8 +24,8 @@ export default function page() {
         </form>
       </div>
       <div className='max-w-4xl mt-10 flex items-center relative justify-center'>
-        <img src='/cap.png' className='rounded-lg border' />
-        <img src='/cap.png' className='rounded-lg absolute opacity-20 blur-2xl -z-10' />
+        <img src='/global/cap.png' className='rounded-lg border' />
+        <img src='/global/cap.png' className='rounded-lg absolute opacity-20 blur-2xl -z-10' />
         <div className='bottom-0 absolute -z-10 rounded-full w-full h-10 bg-primary blur-3xl translate-y-1/2 '></div>
       </div>
     </div>

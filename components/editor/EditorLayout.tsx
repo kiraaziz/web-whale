@@ -85,21 +85,21 @@ export default function EditorLayout({ values, template, css, js }: any) {
     return linksString;
   }
 
-  const getImages = async (ed) => {
-    const images = {};
+  const getImages = async (ed: any) => {
+    const images:any = {};
     const assets = ed.Assets.getAll();
 
     // Process all assets including images
-    assets.forEach((asset) => {
+    assets.forEach((asset:any) => {
       if (asset.get('type') === 'image') {
-        const fileName = asset.get('name') || `image-${asset.cid}.${asset.get('ext')}`;
+        const fileName: any = asset.get('name') || `image-${asset.cid}.${asset.get('ext')}`;
         images[fileName] = asset.get('src');
       }
     });
 
     // Get images from components
     const components = ed.getComponents();
-    const processComponent = (component) => {
+    const processComponent = (component:any) => {
       if (component.get('type') === 'image') {
         const src = component.get('src');
         const fileName = src.split('/').pop();
@@ -114,7 +114,7 @@ export default function EditorLayout({ values, template, css, js }: any) {
     return res
   }
 
-  const blobToBase64 = async (blob) => {
+  const blobToBase64 = async (blob:any) => {
     return new Promise((resolve, _) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result);
@@ -122,14 +122,14 @@ export default function EditorLayout({ values, template, css, js }: any) {
     })
   }
 
-  const fetchImages = async (images) => {
-    let blobs = {};  // This will hold the base64 strings
+  const fetchImages = async (images: any) => {
+    let blobs: any = {};  // This will hold the base64 strings
 
     // Loop through each image and fetch the Blob
     for (const [fileName, url] of Object.entries(images)) {
       try {
         // Fetch the image from the URL
-        const response = await fetch(url);
+        const response = await fetch(url as any);
         if (!response.ok) {
           throw new Error(`Failed to fetch ${fileName}`);
         }
@@ -157,7 +157,7 @@ export default function EditorLayout({ values, template, css, js }: any) {
       onEditor={onEditor}
       plugins={[(editor: Editor) => template(editor), editor => Download(editor, {
         root: {
-          'index.html': ed => `
+          'index.html': (ed: any) => `
           <html>
             <head>
               ${generateLinksString()}
@@ -167,7 +167,7 @@ export default function EditorLayout({ values, template, css, js }: any) {
             </body>
           </html>
         `,
-          img: async ed => {
+          img: async (ed: any) => {
             const images = await getImages(ed);
             return images;
           },
