@@ -1,0 +1,25 @@
+- undo/redo active state color on icons
+x - full screen total
+x - full screen delete padding
+-- project setting (name , favicon , description)
+-- page setting (add file name)
+-- donwload full site
+    x - css
+    x - js
+    x - assets
+    - fonts
+    - images
+    - pages
+-- bottom space to simple the drop and drag
+- image upload components
+- setup final plugins (themplates , tailwind, default components, others)
+- enhance UI
+- test
+
+- simple landing page
+- workspace setting (add project , delete project)
+- access project
+- login / register (simple github and google)
+- add netlify hosting
+- other pages (as section in landign page)
+- marketing videos

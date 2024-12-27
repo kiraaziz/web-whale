@@ -28,6 +28,10 @@ export default function Timers({ projectName }: TimersProps) {
         }
     }
 
+    editor.on('update', () => {
+        console.log(editor.UndoManager.hasUndo())
+    })
+
     return (
         <>
             <div className='flex items-center justify-center border-r h-full w-14'>

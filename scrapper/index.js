@@ -342,7 +342,7 @@ async function captureScreenshots(rootPath) {
     const browserPath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     const browser = await puppeteer.launch({
         executablePath: browserPath,
-        headless: true
+        headless: !true
     });
 
     try {
@@ -407,29 +407,29 @@ async function processAndSaveResults() {
 
     const urls = [
         { url: 'https://mobirise.com/extensions/stockm5/demoblocks.html', name: 'stockm5' },
-        { url: 'https://mobirise.com/extensions/placem5/demoblocks.html', name: 'placem5' },
-        { url: 'https://mobirise.com/extensions/valuem5/demoblocks.html', name: 'valuem5' },
-        { url: 'https://mobirise.com/extensions/carem5/demoblocks.html', name: 'Carem5' },
-        { url: 'https://mobirise.com/extensions/servicem5/demoblocks.html', name: 'servicem5' },
-        { url: 'https://mobirise.com/extensions/talkm5/livedemoblocks.html', name: 'talkm5' },
-        { url: 'https://mobirise.com/extensions/flexm5/demoblocks.html', name: 'flexm5' },
-        { url: 'https://mobirise.com/extensions/progressm5/demoblocks.html', name: 'progressm5' },
-        { url: 'https://mobirise.com/extensions/flavorm5/demoblocks.html', name: 'flavorm5' },
-        { url: 'https://mobirise.com/extensions/decorm5/demoblocks.html', name: 'decorm5' },
-        { url: 'https://mobirise.com/extensions/ridem5/demoblocks.html', name: 'ridem5' },
-        { url: 'https://mobirise.com/extensions/replym5/demoblocks.html', name: 'replym5' },
-        { url: 'https://mobirise.com/extensions/healthm5/demoblocks.html', name: 'healthm5' },
-        { url: 'https://mobirise.com/extensions/printm5/demoblocks.html', name: 'printm5' },
-        { url: 'https://mobirise.com/extensions/trustm5/demoblocks.html', name: 'trustm5' },
-        { url: 'https://mobirise.com/extensions/energym5/demoblocks.html', name: 'energym5' },
-        { url: 'https://mobirise.com/extensions/tutorm5/livedemoblock.html', name: 'tutorm5' },
-        { url: 'https://mobirise.com/extensions/devicem5/demoblocks.html', name: 'devicem5' },
-        { url: 'https://mobirise.com/extensions/immersem5/demoblocks.html', name: 'immersem5' },
-        { url: 'https://mobirise.com/extensions/strategym5/demoblocks.html', name: 'strategym5' },
-        { url: 'https://mobirise.com/extensions/forwardm5/demoblocks.html', name: 'forwardm5' },
-        { url: 'https://mobirise.com/extensions/essencem5/demoblocks.html', name: 'essencem5' },
-        { url: 'https://mobirise.com/extensions/modelm5/demoblocks.html', name: 'modelm5' },
-        { url: 'https://mobirise.com/extensions/buildm5/livedemoblocks.html', name: 'buildm5' },
+        // { url: 'https://mobirise.com/extensions/placem5/demoblocks.html', name: 'placem5' },
+        // { url: 'https://mobirise.com/extensions/valuem5/demoblocks.html', name: 'valuem5' },
+        // { url: 'https://mobirise.com/extensions/carem5/demoblocks.html', name: 'Carem5' },
+        // { url: 'https://mobirise.com/extensions/servicem5/demoblocks.html', name: 'servicem5' },
+        // { url: 'https://mobirise.com/extensions/talkm5/livedemoblocks.html', name: 'talkm5' },
+        // { url: 'https://mobirise.com/extensions/flexm5/demoblocks.html', name: 'flexm5' },
+        // { url: 'https://mobirise.com/extensions/progressm5/demoblocks.html', name: 'progressm5' },
+        // { url: 'https://mobirise.com/extensions/flavorm5/demoblocks.html', name: 'flavorm5' },
+        // { url: 'https://mobirise.com/extensions/decorm5/demoblocks.html', name: 'decorm5' },
+        // { url: 'https://mobirise.com/extensions/ridem5/demoblocks.html', name: 'ridem5' },
+        // { url: 'https://mobirise.com/extensions/replym5/demoblocks.html', name: 'replym5' },
+        // { url: 'https://mobirise.com/extensions/healthm5/demoblocks.html', name: 'healthm5' },
+        // { url: 'https://mobirise.com/extensions/printm5/demoblocks.html', name: 'printm5' },
+        // { url: 'https://mobirise.com/extensions/trustm5/demoblocks.html', name: 'trustm5' },
+        // { url: 'https://mobirise.com/extensions/energym5/demoblocks.html', name: 'energym5' },
+        // { url: 'https://mobirise.com/extensions/tutorm5/livedemoblock.html', name: 'tutorm5' },
+        // { url: 'https://mobirise.com/extensions/devicem5/demoblocks.html', name: 'devicem5' },
+        // { url: 'https://mobirise.com/extensions/immersem5/demoblocks.html', name: 'immersem5' },
+        // { url: 'https://mobirise.com/extensions/strategym5/demoblocks.html', name: 'strategym5' },
+        // { url: 'https://mobirise.com/extensions/forwardm5/demoblocks.html', name: 'forwardm5' },
+        // { url: 'https://mobirise.com/extensions/essencem5/demoblocks.html', name: 'essencem5' },
+        // { url: 'https://mobirise.com/extensions/modelm5/demoblocks.html', name: 'modelm5' },
+        // { url: 'https://mobirise.com/extensions/buildm5/livedemoblocks.html', name: 'buildm5' },
     ];
 
     try {

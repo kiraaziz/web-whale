@@ -33,25 +33,15 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
         setIsOutlineActive(!isOutlineActive)
     }
 
-    editor.on('run:preview', () => {
-        console.log('Preview mode activated');
-        // Add your logic for when preview is turned on
-    });
-
-    // Listen for when preview mode is deactivated
-    editor.on('stop:preview', () => {
-        console.log('Preview mode deactivated');
-        // Add your logic for when preview is turned off
-    });
 
     return (
         <div className='flex items-center justify-center gap-2 flex-1'>
             <div className="flex items-center gap-1  px-5">
                 <Button
                     size="icon"
-                    variant={showEditors ? "default" : "outline"}
+                    variant={!showEditors ? "default" : "outline"}
                     className={cn(
-                        !showEditors && "text-foreground/60",
+                        showEditors && "text-foreground/60",
                         "transition-all duration-200"
                     )}
                     onClick={() => setShowEditors(!showEditors)}
@@ -108,7 +98,10 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                     size="icon"
                     variant={"outline"}
                     onClick={() => {
-                        editor.runCommand('gjs-export-zip')
+                        console.log("Downloading")
+                        editor && editor.runCommand('gjs-export-zip')
+
+                        console.log("End exe")
                     }}>
                     <Download size={20} />
                 </Button>

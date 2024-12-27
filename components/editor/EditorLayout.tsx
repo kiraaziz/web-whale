@@ -1,7 +1,6 @@
 "use client"
 import grapesjs, { Editor } from 'grapesjs'
 import GjsEditor, { BlocksProvider, Canvas, LayersProvider, PagesProvider, SelectorsProvider, StylesProvider, TraitsProvider } from '@grapesjs/react'
-import type { EditorConfig } from "grapesjs"
 import LayerManager from './Elements/LayerManager'
 import { useEffect, useState } from 'react'
 import ElementSelector from './Tools/ElementSelector'
@@ -13,7 +12,10 @@ import { PageManager } from './Elements/PagesManger'
 import Timers from './Tools/Timers'
 import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
-export default function EditorLayout({ values, template }: any) {
+import Download from 'grapesjs-plugin-export'
+import { Button } from '../ui/button'
+
+export default function EditorLayout({ values, template, css, js }: any) {
 
   const [selectedElement, setSelectedElement] = useState("components")
   const [editor, setEditor] = useState<Editor>()
@@ -34,6 +36,7 @@ export default function EditorLayout({ values, template }: any) {
 
   editor && editor.on('component:selected', (component) => {
     if (component && !init) {
+      setShowEditors(true)
       setSelectedElement(!["style", "layers", "settings"].includes(selectedElement) ? "style" : selectedElement)
     }
   })
@@ -47,21 +50,137 @@ export default function EditorLayout({ values, template }: any) {
   }, [editor])
 
   editor && editor.on('panel:switch', (activePanel) => {
-    // activePanel will contain information about the currently active panel
-    console.log('Active panel:', activePanel);
+    console.log('Active panel:', activePanel)
 
-    // Get the active panel's name
-    const activePanelName = activePanel.get('id');
-    console.log('Active panel name:', activePanelName);
-  });
+    const activePanelName = activePanel.get('id')
+    console.log('Active panel name:', activePanelName)
+
+  })
+
+
+  editor && editor.on('stop:core:preview', () => {
+    setIsPreview(false)
+  })
 
   const [showEditors, setShowEditors] = useState(true)
+
+  const generateLinksString = () => {
+    const cssFiles = {
+      'style.css': (ed: any) => ed.getCss(),
+      ...css,
+      'script.js': (ed: any) => ed.getJs(),
+      ...js
+    }
+
+    let linksString = '';
+    for (const file of Object.keys(cssFiles)) {
+      const href = file
+      if (href.includes(".css")) {
+        linksString += `<link rel="stylesheet" href="css/${href}"/>\n`;
+      } else {
+        linksString += `<script src="js/${href}"></script>\n`;
+      }
+    }
+
+    return linksString;
+  }
+
+  const getImages = async (ed) => {
+    const images = {};
+    const assets = ed.Assets.getAll();
+
+    // Process all assets including images
+    assets.forEach((asset) => {
+      if (asset.get('type') === 'image') {
+        const fileName = asset.get('name') || `image-${asset.cid}.${asset.get('ext')}`;
+        images[fileName] = asset.get('src');
+      }
+    });
+
+    // Get images from components
+    const components = ed.getComponents();
+    const processComponent = (component) => {
+      if (component.get('type') === 'image') {
+        const src = component.get('src');
+        const fileName = src.split('/').pop();
+        images[fileName] = src;
+      }
+      component.get('components').forEach(processComponent);
+    };
+
+    components.forEach(processComponent);
+
+    const res = await fetchImages(images)
+    return res
+  }
+
+  const blobToBase64 = async (blob) => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    })
+  }
+
+  const fetchImages = async (images) => {
+    let blobs = {};  // This will hold the base64 strings
+
+    // Loop through each image and fetch the Blob
+    for (const [fileName, url] of Object.entries(images)) {
+      try {
+        // Fetch the image from the URL
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${fileName}`);
+        }
+
+        // Convert the response to a Blob
+        const blob = await response.blob();
+
+        // Convert the Blob to base64 and store it
+        const base64String = await blobToBase64(blob);
+        blobs[fileName] = base64String;
+
+      } catch (error) {
+        console.error(`Error fetching ${fileName}:`, error);
+      }
+    }
+
+    // After all images are processed, log the blobs object
+    console.log(blobs);
+    return blobs;
+  };
 
   return (
     <GjsEditor
       grapesjs={grapesjs}
       onEditor={onEditor}
-      plugins={[(editor: Editor) => template(editor)]}
+      plugins={[(editor: Editor) => template(editor), editor => Download(editor, {
+        root: {
+          'index.html': ed => `
+          <html>
+            <head>
+              ${generateLinksString()}
+            </head>
+            <body>
+              ${ed.getHtml()}
+            </body>
+          </html>
+        `,
+          img: async ed => {
+            const images = await getImages(ed);
+            return images;
+          },
+          css: {
+            'style.css': (ed: any) => ed.getCss(),
+            ...css
+          },
+          js: {
+            'script.js': (ed: any) => ed.getJs(),
+            ...js
+          },
+        }
+      })]}
       grapesjsCss="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
       options={{
         height: '100vh',
@@ -78,8 +197,8 @@ export default function EditorLayout({ values, template }: any) {
 
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
-          {showEditors && <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />}
-          <div className={`h-full border-r bg-muted/20 w-[20em] magicScroll ${!showEditors && "hidden"}`}>
+          {true && <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />}
+          <div className={`h-full border-r bg-muted/20  magicScroll ease-in-out duration-200 overflow-x-hidden ${!showEditors ? "w-0 opacity-0 " : "opacity-100 w-[20em]"}`}>
             {(selectedElement === "layers") && <LayersProvider>
               {props => <LayerManager {...props} />}
             </LayersProvider>}
@@ -101,8 +220,8 @@ export default function EditorLayout({ values, template }: any) {
               </StylesProvider>
             </div>
           </div>
-          <div className={cn(showEditors ? "p-10" : "p-5" , ' w-full overflow-hidden bg-card flex-1')}>
-            <div className={cn(showEditors ? "p-5" : "p-0", 'h-full w-full bg-background gjs-column-m rounded-2xl shadow-xl border overflow-')}>
+          <div className={cn(showEditors ? "p-10" : "p-0", ' w-full overflow-hidden bg-card flex-1')}>
+            <div className={cn(showEditors ? "p-5  rounded-2xl" : "p-0", 'h-full w-full bg-background gjs-column-m shadow-xl border overflow-')}>
               <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} />
             </div>
           </div>
