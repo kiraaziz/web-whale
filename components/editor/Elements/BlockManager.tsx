@@ -5,10 +5,11 @@ type CustomBlockManagerProps = Pick<
     BlocksResultProps,
     'mapCategoryBlocks' | 'dragStart' | 'dragStop'
 > & {
-    setSelectedElement: (element: any) => void
+    setSelectedElement: (element: any) => void,
+    setIsPreview: (element: any) => void
 }
 
-export function BlockManager({ mapCategoryBlocks, dragStart, dragStop }: CustomBlockManagerProps) {
+export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPreview }: CustomBlockManagerProps) {
 
     function getImageSrc(htmlString: any) {
         const match = htmlString.match(/<img[^>]*src="([^"]+)"/);
@@ -24,9 +25,13 @@ export function BlockManager({ mapCategoryBlocks, dragStart, dragStop }: CustomB
                             <div key={block.getId()}
                                 draggable
                                 className={cn('flex flex-col items-center  cursor-pointer')}
-                                onDragStart={(ev) => dragStart(block, ev.nativeEvent)}
+                                onDragStart={(ev) => {
+                                    setIsPreview(false)
+                                    dragStart(block, ev.nativeEvent)
+                                }}
                                 onDragEnd={() => {
                                     dragStop(false)
+                                    setIsPreview(true)
                                 }}
                             >
                                 {/* {JSON.stringify(block.getId())} */}

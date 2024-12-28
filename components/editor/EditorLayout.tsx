@@ -12,15 +12,19 @@ import { PageManager } from './Elements/PagesManger'
 import Timers from './Tools/Timers'
 import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
-import Download from 'grapesjs-plugin-export'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import { Button } from '../ui/button'
 
-export default function EditorLayout({ values, template, css, js }: any) {
+export default function EditorLayout({ values, template }: any) {
 
+  const templaeID = values.styles[0].split("/")[2]
   const [selectedElement, setSelectedElement] = useState("components")
   const [editor, setEditor] = useState<Editor>()
   const [init, setInit] = useState(true)
   const [isPreview, setIsPreview] = useState(false)
+  const [showEditors, setShowEditors] = useState(true)
+  const [showSpaces, setShowSpaces] = useState(true)
 
   const onEditor = (editor_: Editor) => {
     if (editor_) {
@@ -41,6 +45,10 @@ export default function EditorLayout({ values, template, css, js }: any) {
     }
   })
 
+  editor && editor.on('stop:core:preview', () => {
+    setIsPreview(false)
+  })
+
   useEffect(() => {
     if (editor) {
       const wrapper = editor.getWrapper()
@@ -49,138 +57,109 @@ export default function EditorLayout({ values, template, css, js }: any) {
     }
   }, [editor])
 
-  editor && editor.on('panel:switch', (activePanel) => {
-    console.log('Active panel:', activePanel)
 
-    const activePanelName = activePanel.get('id')
-    console.log('Active panel name:', activePanelName)
+  async function saveAll() {
+    const zip = new JSZip();
 
-  })
+    // Get HTML content
+    const html = editor.getHtml();
+    const css = editor.getCss();
 
 
-  editor && editor.on('stop:core:preview', () => {
-    setIsPreview(false)
-  })
 
-  const [showEditors, setShowEditors] = useState(true)
+    // Asset folders to copy
+    const assetFolders = ['js', 'fonts', 'css', 'img'];
+    const basePath = `/template/${templaeID}/`;
 
-  const generateLinksString = () => {
-    const cssFiles = {
-      'style.css': (ed: any) => ed.getCss(),
-      ...css,
-      'script.js': (ed: any) => ed.getJs(),
-      ...js
-    }
-
-    let linksString = '';
-    for (const file of Object.keys(cssFiles)) {
-      const href = file
-      if (href.includes(".css")) {
-        linksString += `<link rel="stylesheet" href="css/${href}"/>\n`;
-      } else {
-        linksString += `<script src="js/${href}"></script>\n`;
-      }
-    }
-
-    return linksString;
-  }
-
-  const getImages = async (ed: any) => {
-    const images:any = {};
-    const assets = ed.Assets.getAll();
-
-    // Process all assets including images
-    assets.forEach((asset:any) => {
-      if (asset.get('type') === 'image') {
-        const fileName: any = asset.get('name') || `image-${asset.cid}.${asset.get('ext')}`;
-        images[fileName] = asset.get('src');
-      }
-    });
-
-    // Get images from components
-    const components = ed.getComponents();
-    const processComponent = (component:any) => {
-      if (component.get('type') === 'image') {
-        const src = component.get('src');
-        const fileName = src.split('/').pop();
-        images[fileName] = src;
-      }
-      component.get('components').forEach(processComponent);
-    };
-
-    components.forEach(processComponent);
-
-    const res = await fetchImages(images)
-    return res
-  }
-
-  const blobToBase64 = async (blob:any) => {
-    return new Promise((resolve, _) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    })
-  }
-
-  const fetchImages = async (images: any) => {
-    let blobs: any = {};  // This will hold the base64 strings
-
-    // Loop through each image and fetch the Blob
-    for (const [fileName, url] of Object.entries(images)) {
+    // Function to read file content
+    async function readFileContent(path) {
       try {
-        // Fetch the image from the URL
-        const response = await fetch(url as any);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${fileName}`);
-        }
-
-        // Convert the response to a Blob
+        const response = await fetch(path);
         const blob = await response.blob();
-
-        // Convert the Blob to base64 and store it
-        const base64String = await blobToBase64(blob);
-        blobs[fileName] = base64String;
-
+        return blob;
       } catch (error) {
-        console.error(`Error fetching ${fileName}:`, error);
+        console.error(`Error reading file ${path}:`, error);
+        return null;
       }
     }
 
-    // After all images are processed, log the blobs object
-    console.log(blobs);
-    return blobs;
-  };
+    async function getFileList(folderPath) {
+      try {
+        const response = await fetch(`/api/files?path=${encodeURIComponent(folderPath)}`);
+        const files = await response.json();
+        return files;
+      } catch (error) {
+        console.error('Error getting file list:', error);
+        return [];
+      }
+    }
+
+    let cssFiles = ""
+    let jsFiles = ""
+
+    // Copy assets
+    for (const folder of assetFolders) {
+      try {
+        // Get list of files in each folder
+        const folderPath = `${basePath}${folder}/`;
+        const fileList_ = await getFileList(folderPath); // You need to implement this based on your backend
+
+        const fileList = await fileList_.files
+        for (const file of fileList) {
+          const content = await readFileContent(`${folderPath}${file}`);
+          if (content) {
+            // Maintain the same directory structure in zip
+            const filesBase = `template/${templaeID}/${folder}/${file}`
+            zip.file(filesBase, content);
+            if (folder === "css" || folder === "fonts") {
+              cssFiles += `<link rel="stylesheet" href="${filesBase}"/>\n`
+            }
+
+            if (folder === "js") {
+              jsFiles += `<script src="${filesBase}"></script>\n`
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing ${folder} folder:`, error);
+      }
+    }
+
+    // Create complete HTML file with CSS
+    const completeHtml = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Exported Template</title>
+            ${jsFiles}
+            ${cssFiles}
+            <style>
+              ${css}
+            </style>
+          </head>
+          <body>
+            ${html}
+          </body>
+        </html>
+      `;
+
+    // Add HTML to zip
+    zip.file('index.html', completeHtml);
+    // Generate and download zip
+    try {
+      const content = await zip.generateAsync({ type: 'blob' });
+      saveAs(content, 'template-with-assets.zip');
+    } catch (error) {
+      console.error('Error generating zip:', error);
+    }
+  }
 
   return (
     <GjsEditor
       grapesjs={grapesjs}
       onEditor={onEditor}
-      plugins={[(editor: Editor) => template(editor), editor => Download(editor, {
-        root: {
-          'index.html': (ed: any) => `
-          <html>
-            <head>
-              ${generateLinksString()}
-            </head>
-            <body>
-              ${ed.getHtml()}
-            </body>
-          </html>
-        `,
-          img: async (ed: any) => {
-            const images = await getImages(ed);
-            return images;
-          },
-          css: {
-            'style.css': (ed: any) => ed.getCss(),
-            ...css
-          },
-          js: {
-            'script.js': (ed: any) => ed.getJs(),
-            ...js
-          },
-        }
-      })]}
+      plugins={[(editor: Editor) => template(editor)]}
       grapesjsCss="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
       options={{
         height: '100vh',
@@ -193,7 +172,7 @@ export default function EditorLayout({ values, template, css, js }: any) {
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
           {editor && <Timers projectName={"website"} />}
-          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} />}
+          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={saveAll}/>}
 
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
@@ -206,7 +185,7 @@ export default function EditorLayout({ values, template, css, js }: any) {
               {props => <TraitManager {...props} />}
             </TraitsProvider>}
             {(selectedElement === "components") && <BlocksProvider>
-              {props => <BlockManager {...props} setSelectedElement={setSelectedElement} />}
+              {props => <BlockManager {...props} setSelectedElement={setSelectedElement} setIsPreview={setShowSpaces} />}
             </BlocksProvider>}
             {(selectedElement === "pages") && <PagesProvider>
               {props => <PageManager {...props} setSelectedElement={setSelectedElement} />}
@@ -220,9 +199,9 @@ export default function EditorLayout({ values, template, css, js }: any) {
               </StylesProvider>
             </div>
           </div>
-          <div className={cn(showEditors ? "p-10" : "p-0", ' w-full overflow-hidden bg-card flex-1')}>
-            <div className={cn(showEditors ? "p-5  rounded-2xl" : "p-0", 'h-full w-full bg-background gjs-column-m shadow-xl border overflow-')}>
-              <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} />
+          <div className={cn((showEditors && showSpaces) ? "p-10" : "p-0", 'ease-in-out duration-150  w-full overflow-hidden bg-card flex-1')}>
+            <div className={cn((showEditors && showSpaces) ? "p-5  ease-in-out duration-150 rounded-2xl" : "p-0", 'h-full w-full bg-background gjs-column-m shadow-xl border overflow-')}>
+              <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} /> 
             </div>
           </div>
         </div>

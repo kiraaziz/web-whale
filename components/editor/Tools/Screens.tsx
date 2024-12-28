@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { DevicesProvider, useEditor } from '@grapesjs/react'
 import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet, Download, PanelRightClose, PanelRightOpen } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-export default function Screens({ isPreview, setIsPreview, showEditors, setShowEditors }: any) {
+export default function Screens({ isPreview, setIsPreview, showEditors, setShowEditors, saveAll }: any) {
     const editor = useEditor()
     const [isOutlineActive, setIsOutlineActive] = useState(false)
 
@@ -97,12 +97,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                 <Button
                     size="icon"
                     variant={"outline"}
-                    onClick={() => {
-                        console.log("Downloading")
-                        editor && editor.runCommand('gjs-export-zip')
-
-                        console.log("End exe")
-                    }}>
+                    onClick={saveAll}>
                     <Download size={20} />
                 </Button>
             </div>

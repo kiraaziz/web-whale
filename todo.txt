@@ -7,10 +7,10 @@ x - full screen delete padding
     x - css
     x - js
     x - assets
-    - fonts
-    - images
+    x - fonts
+    x - images
     - pages
--- bottom space to simple the drop and drag
+x/2 - bottom space to simple the drop and drag
 - image upload components
 - setup final plugins (themplates , tailwind, default components, others)
 - enhance UI

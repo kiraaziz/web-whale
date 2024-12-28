@@ -197,7 +197,8 @@ async function processUrl(url, name) {
                 const cssContent = await response.text();
                 const { processedCss, fontFiles, imageFiles } = await processCssFiles(cssContent, absoluteUrl);
                 const fileName = generateRandomName('.css');
-                fs.writeFileSync(path.join(cssDir, fileName), processedCss.replaceAll("!important", ""));
+                // fs.writeFileSync(path.join(cssDir, fileName), processedCss.replaceAll("!important", ""));
+                fs.writeFileSync(path.join(cssDir, fileName));
 
                 console.log(Date.now() + " download css file")
 
