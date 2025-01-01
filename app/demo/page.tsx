@@ -2,71 +2,6 @@
 import EditorLayout from '@/components/editor/EditorLayout'
 import { useState } from 'react'
 
-const totalBlocks = [{
-  base: '00fac6d2',
-  options: {
-    baseDirPath: '../public/templates/',
-    url: 'https://mobirise.com/extensions/servicem5/demoblocks.html',
-    isHeadless: true,
-    addImportant: true,
-    browserPath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-    rootDom: 'section'
-  },
-  structure: {
-    root: [ 'c8af.js' ],
-    css: [
-      '07bb.css', '116f.css',
-      '217a.css', '35f5.css',
-      '52d6.css', '5c79.css',
-      '76c3.css', '81f0.css',
-      'ab79.css', 'b00c.css',
-      'b2ff.css', 'e778.css'
-    ],
-    fonts: [
-      '01e6.ttf',  '1fdb.ttf',   '219d.ttf',
-      '2c7f.eot',  '2e39.woff2', '333f.ttf',
-      '440e.woff', '4468.svg',   '4e82.ttf',
-      '5361.ttf',  '5a9d.woff',  '62b4.ttf',
-      '65ba.svg',  '6f96.woff2', '8384.ttf',
-      '85c6.eot',  '8a8d.ttf',   '951c.eot',
-      '9b6d.ttf',  'a2c6.ttf',   'b309.ttf',
-      'b72d.ttf',  'b9a3.ttf',   'd789.eot',
-      'de28.ttf',  'e420.ttf',   'ef97.eot',
-      'f2fc.svg',  'f849.ttf',   'fa3f.woff',
-      'fd2b.eot'
-    ],
-    img: [
-      '0903.jpeg', '160f.jpeg', '1907.jpeg',
-      '257c.jpeg', '2d08.jpeg', '35ba.jpeg',
-      '4929.jpeg', '497d.jpeg', '4be1.jpeg',
-      '4c0b.jpeg', '5a10.jpeg', '6068.jpeg',
-      '6c2a.jpeg', '6d1f.jpeg', '6fba.jpeg',
-      '743d.jpeg', '78dc.jpeg', '8460.jpeg',
-      '899f.jpeg', '9579.jpeg', '9b09.jpeg',
-      'a0ae.jpeg', 'bb43.jpeg', 'cb07.jpeg',
-      'cb51.jpeg', 'cee0.png',  'f648.jpeg'
-    ],
-    js: [
-      '04a5.js', '1b17.js',
-      '29fc.js', '2d9c.js',
-      '6a32.js', '7263.js',
-      '8619.js', '8b9e.js',
-      'ba50.js', 'db90.js'
-    ],
-    preview: [
-      '0285.png', '0f7d.png', '18f4.png',
-      '30a2.png', '58a4.png', '73c6.png',
-      '7f44.png', '8022.png', '83e6.png',
-      '8675.png', '8a89.png', '8c23.png',
-      '8f7a.png', '9b45.png', 'a686.png',
-      'b7e1.png', 'ba85.png', 'bb75.png',
-      'c0b4.png', 'cd5f.png', 'd672.png',
-      'da9e.png', 'e227.png', 'e677.png',
-      'ea96.png'
-    ]
-  }
-}]
-
 export default function Page() {
 
   const [v, setV] = useState(null)
@@ -105,8 +40,8 @@ export default function Page() {
     <div className="h-screen w-screen overflow-auto">
       <div className='p-5 grid grid-cols-3 gap-2 overflow-auto'>
         {totalBlocks.map((e: any, index: number) => (
-          <div key={index} onClick={() => handleSelect(e)} className='p-2 bg-muted/20 rounded border h-60 overflow-hidden hover:cursor-pointer'>
-            {e.structure.preview.slice(1, 2).map((i: any) => (
+          <div key={index} onClick={() => handleSelect(e)} className='p-2 bg-muted/20 rounded border h-max overflow-hidden hover:cursor-pointer'>
+            {e.structure.preview.map((i: any) => (
               <>
                 <img src={`templates/${e.base}/preview/${i}`} alt="" className='w-full' />
               </>
@@ -121,3 +56,179 @@ export default function Page() {
     <EditorLayout template={t1} values={v} />
   );
 }
+
+
+const totalBlocks = [
+  {
+    "base": "651eabba",
+    "options": {
+      "baseDirPath": "../public/templates/",
+      "url": "https://mobirise.com/extensions/curem4/liveblock.html",
+      "isHeadless": true,
+      "addImportant": true,
+      "browserPath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "rootDom": "section"
+    },
+    "structure": {
+      "root": [
+        "\\807c.js"
+      ],
+      "css": [
+        "\\1a07.css",
+        "\\1e9d.css",
+        "\\2143.css",
+        "\\24aa.css",
+        "\\7145.css",
+        "\\77b4.css",
+        "\\a5c4.css",
+        "\\b059.css",
+        "\\c4fa.css",
+        "\\d432.css",
+        "\\e3a5.css",
+        "\\e6c6.css",
+        "\\f4ce.css"
+      ],
+      "fonts": [
+        "\\0d63.eot",
+        "\\3ee0.eot",
+        "\\4c48.eot",
+        "\\5a30.eot",
+        "\\5ae7.woff",
+        "\\635c.ttf",
+        "\\98fd.svg",
+        "\\a38a.ttf",
+        "\\b8ae.woff2",
+        "\\d66b.svg",
+        "\\d677.woff"
+      ],
+      "img": [
+        "\\002b.png",
+        "\\00e5.jpeg",
+        "\\0384.jpeg",
+        "\\0413.jpeg",
+        "\\10a8.png",
+        "\\1424.jpeg",
+        "\\1a4a.jpeg",
+        "\\1ee4.jpeg",
+        "\\1f1b.png",
+        "\\2250.jpeg",
+        "\\2298.jpeg",
+        "\\25d8.jpeg",
+        "\\26a0.jpeg",
+        "\\26f2.png",
+        "\\2f7d.jpg",
+        "\\3628.jpeg",
+        "\\3732.jpg",
+        "\\3a51.png",
+        "\\3c68.jpg",
+        "\\3d11.jpeg",
+        "\\4a09.jpeg",
+        "\\4ab3.jpeg",
+        "\\5378.jpg",
+        "\\58af.jpeg",
+        "\\5cf5.jpeg",
+        "\\5e0b.jpeg",
+        "\\64cc.jpeg",
+        "\\6afe.jpeg",
+        "\\6d2f.jpeg",
+        "\\7a5f.jpeg",
+        "\\7a97.png",
+        "\\814c.jpeg",
+        "\\8191.jpeg",
+        "\\8590.jpeg",
+        "\\8746.jpeg",
+        "\\8f08.jpeg",
+        "\\94af.jpeg",
+        "\\94d6.png",
+        "\\9869.jpeg",
+        "\\a32e.jpeg",
+        "\\a653.jpeg",
+        "\\a78f.jpeg",
+        "\\a851.jpeg",
+        "\\aa89.jpeg",
+        "\\ab30.png",
+        "\\ac9d.png",
+        "\\adb6.jpeg",
+        "\\addf.png",
+        "\\b123.jpeg",
+        "\\bc7f.jpeg",
+        "\\bde2.jpg",
+        "\\c1ac.jpeg",
+        "\\c9e8.jpeg",
+        "\\cde6.png",
+        "\\ceca.jpeg",
+        "\\cff3.jpeg",
+        "\\dbbb.jpeg",
+        "\\e95d.jpeg",
+        "\\ec3e.jpeg",
+        "\\ec6e.jpeg",
+        "\\ecf2.jpeg",
+        "\\ee81.jpeg",
+        "\\f667.jpeg",
+        "\\fa9f.jpeg",
+        "\\fb5a.jpeg"
+      ],
+      "js": [
+        "\\0bb8.js",
+        "\\0ee9.js",
+        "\\2866.js",
+        "\\5395.js",
+        "\\55af.js",
+        "\\617b.js",
+        "\\6f46.js",
+        "\\8502.js",
+        "\\8a22.js",
+        "\\c44b.js",
+        "\\d358.js",
+        "\\e1fa.js",
+        "\\ecb4.js",
+        "\\f9a0.js"
+      ],
+      "preview": [
+        "\\0006.png",
+        "\\0084.png",
+        "\\0aae.png",
+        "\\0fba.png",
+        "\\2762.png",
+        "\\2a1c.png",
+        "\\4b87.png",
+        "\\4d57.png",
+        "\\5405.png",
+        "\\58c5.png",
+        "\\668f.png",
+        "\\6d78.png",
+        "\\7736.png",
+        "\\7821.png",
+        "\\7bf9.png",
+        "\\7e2e.png",
+        "\\8006.png",
+        "\\8aac.png",
+        "\\8d38.png",
+        "\\8e20.png",
+        "\\9269.png",
+        "\\9dc6.png",
+        "\\a75a.png",
+        "\\a767.png",
+        "\\ace3.png",
+        "\\b566.png",
+        "\\b62a.png",
+        "\\b7c9.png",
+        "\\ba6b.png",
+        "\\bc69.png",
+        "\\c400.png",
+        "\\c805.png",
+        "\\d12f.png",
+        "\\d31f.png",
+        "\\dae9.png",
+        "\\dc56.png",
+        "\\e01e.png",
+        "\\e1be.png",
+        "\\e520.png",
+        "\\f328.png",
+        "\\f35c.png",
+        "\\f61d.png",
+        "\\f951.png"
+      ]
+    }
+  }
+]

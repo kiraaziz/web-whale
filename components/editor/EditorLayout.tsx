@@ -153,7 +153,7 @@ export default function EditorLayout({ values, template }: any) {
         storageManager: false,
         canvas: {
           scripts: values.structure.js.map((v: any) => { return `templates/${templaeID}/js/${v}` }),
-          styles: values.structure.css.map((v: any) => { return `templates/${templaeID}/css/${v}` })
+          styles: values.structure.css.map((v: any) => { return `templates/${templaeID}/css/${v}` }).reverse()
         },
       }}>
       <div className={`flex w-full flex-col h-[100svh]`}>
