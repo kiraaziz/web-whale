@@ -14,11 +14,10 @@ import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { Button } from '../ui/button'
 
 export default function EditorLayout({ values, template }: any) {
 
-  const templaeID = values.styles[0].split("/")[2]
+  const templaeID = values.base
   const [selectedElement, setSelectedElement] = useState("components")
   const [editor, setEditor] = useState<Editor>()
   const [init, setInit] = useState(true)
@@ -62,17 +61,15 @@ export default function EditorLayout({ values, template }: any) {
     const zip = new JSZip();
 
     // Get HTML content
-    const html = editor.getHtml();
-    const css = editor.getCss();
-
-
+    const html = editor && editor.getHtml();
+    const css = editor && editor.getCss();
 
     // Asset folders to copy
     const assetFolders = ['js', 'fonts', 'css', 'img'];
-    const basePath = `/template/${templaeID}/`;
+    const basePath = `/templates/${templaeID}`;
 
     // Function to read file content
-    async function readFileContent(path) {
+    async function readFileContent(path: any) {
       try {
         const response = await fetch(path);
         const blob = await response.blob();
@@ -83,17 +80,6 @@ export default function EditorLayout({ values, template }: any) {
       }
     }
 
-    async function getFileList(folderPath) {
-      try {
-        const response = await fetch(`/api/files?path=${encodeURIComponent(folderPath)}`);
-        const files = await response.json();
-        return files;
-      } catch (error) {
-        console.error('Error getting file list:', error);
-        return [];
-      }
-    }
-
     let cssFiles = ""
     let jsFiles = ""
 
@@ -101,17 +87,18 @@ export default function EditorLayout({ values, template }: any) {
     for (const folder of assetFolders) {
       try {
         // Get list of files in each folder
-        const folderPath = `${basePath}${folder}/`;
-        const fileList_ = await getFileList(folderPath); // You need to implement this based on your backend
+        const folderPath = `${basePath}/${folder}/`;
+        const fileList = values.structure[folder] // You need to implement this based on your backend
 
-        const fileList = await fileList_.files
+        console.log(fileList)
+
         for (const file of fileList) {
           const content = await readFileContent(`${folderPath}${file}`);
           if (content) {
             // Maintain the same directory structure in zip
-            const filesBase = `template/${templaeID}/${folder}/${file}`
+            const filesBase = `templates/${templaeID}/${folder}/${file}`
             zip.file(filesBase, content);
-            if (folder === "css" || folder === "fonts") {
+            if (folder === "css") {
               cssFiles += `<link rel="stylesheet" href="${filesBase}"/>\n`
             }
 
@@ -165,14 +152,14 @@ export default function EditorLayout({ values, template }: any) {
         height: '100vh',
         storageManager: false,
         canvas: {
-          scripts: values.scripts,
-          styles: values.styles
+          scripts: values.structure.js.map((v: any) => { return `templates/${templaeID}/js/${v}` }),
+          styles: values.structure.css.map((v: any) => { return `templates/${templaeID}/css/${v}` })
         },
       }}>
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
           {editor && <Timers projectName={"website"} />}
-          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={saveAll}/>}
+          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={saveAll} />}
 
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
@@ -201,7 +188,7 @@ export default function EditorLayout({ values, template }: any) {
           </div>
           <div className={cn((showEditors && showSpaces) ? "p-10" : "p-0", 'ease-in-out duration-150  w-full overflow-hidden bg-card flex-1')}>
             <div className={cn((showEditors && showSpaces) ? "p-5  ease-in-out duration-150 rounded-2xl" : "p-0", 'h-full w-full bg-background gjs-column-m shadow-xl border overflow-')}>
-              <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} /> 
+              <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} />
             </div>
           </div>
         </div>
