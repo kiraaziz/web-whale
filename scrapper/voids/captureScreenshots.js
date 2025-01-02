@@ -34,7 +34,7 @@ async function captureScreenshots(rootPath, isHeadless, browserPath, rootDom) {
             await page.close()
         }
     } catch (error) {
-        console.error('Error while capturing screenshots')
+        console.error('Error while capturing screenshots ' + error.message)
     } finally {
         await browser.close()
     }

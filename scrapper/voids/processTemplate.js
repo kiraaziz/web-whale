@@ -3,7 +3,7 @@ const path = require('path')
 const fetch = require('node-fetch-cache')
 const { createDirectories } = require('./createDirectories')
 const { extractUrlsFromHtml, fetchCssFiles, fetchJsFiles, fetchImgFiles } = require('./extractFromHtml')
-const { generateSectionHtmlFiles } = require('./generateSectionHtmlFiles')
+const { generateSectionHtmlFiles, generateSectionHtmlFilesPreview } = require('./generateSectionHtmlFiles')
 const { generateRandomName } = require('./generateRandomName')
 const { getFlatStructure } = require('./getFlatStructure')
 
@@ -60,6 +60,11 @@ async function processTemplate({
             })
             return processedSection
         })
+
+        const previewScreenShot = processedSectionsSave.slice(0, 2).join('\n')
+
+        await generateSectionHtmlFilesPreview(previewScreenShot, baseDir, cssFiles, jsFiles, baseDir, isHeadless, browserPath, rootDom)
+        return
 
         const previews = await generateSectionHtmlFiles(processedSections, baseDir, cssFiles, jsFiles, baseDir, isHeadless, browserPath, rootDom)
 
