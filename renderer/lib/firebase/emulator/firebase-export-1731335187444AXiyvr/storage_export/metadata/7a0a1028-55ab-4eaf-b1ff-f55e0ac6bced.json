@@ -1,0 +1,19 @@
+{
+  "name": "upload/image_1731334124967.webp",
+  "bucket": "neoflow-1.appspot.com",
+  "metageneration": 1,
+  "generation": 1731334125002,
+  "contentType": "application/octet-stream",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "8a3ee6d0-23d3-4316-9d23-d42ee53c9c73"
+  ],
+  "etag": "H5EH3JcgL2JPdhTzWPBlf1dGOsw",
+  "customMetadata": {},
+  "timeCreated": "2024-11-11T14:08:45.002Z",
+  "updated": "2024-11-11T14:08:45.002Z",
+  "size": 60260,
+  "md5Hash": "6IZrPWIGTUzI55OkCA2G5g==",
+  "crc32c": "2672382988"
+}

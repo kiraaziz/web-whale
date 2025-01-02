@@ -3,7 +3,7 @@ x - full screen total
 x - full screen delete padding
 -- project setting (name , favicon , description)
 -- page setting (add file name)
--- donwload full site
+x- donwload full site
     x - css
     x - js
     x - assets
@@ -16,10 +16,10 @@ x/2 - bottom space to simple the drop and drag
 - enhance UI
 - test
 
-- simple landing page
+x - simple landing page
 - workspace setting (add project , delete project)
 - access project
-- login / register (simple github and google)
+x - login / register (simple github and google)
 - add netlify hosting
-- other pages (as section in landign page)
-- marketing videos
+x - other pages (as section in landign page)
+x - marketing videos
