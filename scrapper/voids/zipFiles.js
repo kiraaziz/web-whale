@@ -1,7 +1,6 @@
 const fs = require('fs');
 const archiver = require('archiver');
 const path = require('path');
-const rimraf = require('rimraf');
 
 function zipFiles(name, data) {
     const output = fs.createWriteStream(`${name}.whale`);
@@ -11,13 +10,7 @@ function zipFiles(name, data) {
         console.log(`Archive created: ${archive.pointer()} total bytes`);
         // Delete the data folders after the archive is created
         const baseDir = path.resolve(data.options.baseDirPath, data.base);
-        rimraf(baseDir, function (err) {
-            if (err) {
-                console.error(`Error deleting the directory ${baseDir}: ${err}`);
-            } else {
-                console.log(`Deleted the directory ${baseDir}`);
-            }
-        });
+        fs.rmdirSync(baseDir, { recursive: true });
     });
 
     archive.on('error', function (err) {

@@ -64,7 +64,7 @@ async function processTemplate({
         const previewScreenShot = processedSectionsSave.slice(0, 2).join('\n')
 
         await generateSectionHtmlFilesPreview(previewScreenShot, baseDir, cssFiles, jsFiles, baseDir, isHeadless, browserPath, rootDom)
-        return
+        // return
 
         const previews = await generateSectionHtmlFiles(processedSections, baseDir, cssFiles, jsFiles, baseDir, isHeadless, browserPath, rootDom)
 

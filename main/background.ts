@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain, dialog, protocol } from 'electron'
+import { app, ipcMain, dialog, protocol, shell } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 import fs from 'fs/promises'
@@ -7,6 +7,7 @@ import AdmZip from 'adm-zip'
 import { z } from "zod"
 import Datastore from 'nedb-promises'
 import { v4 } from 'uuid'
+
 const SetupSchema = z.object({
   base: z.string(),
   options: z.object({
@@ -124,23 +125,51 @@ ipcMain.handle('get-templates', async () => {
 })
 
 ipcMain.handle('send-template-data', async (event, template) => {
-
   const ID = v4()
   const projectDir = path.join(app.getPath('userData'), 'projects', ID)
   await fs.mkdir(projectDir, { recursive: true })
 
-  const templateZipPath = path.join(template.directory, 'template.whale')
-  const setupJsonPath = path.join(template.directory, 'setup.json')
+  // Create an empty projectState.json file in the new project directory
+  const projectStatePath = path.join(projectDir, 'projectState.json')
+  await fs.writeFile(projectStatePath, '{}')
 
-  const zip = new AdmZip(templateZipPath)
-  await zip.extractAllTo(projectDir, true)
-  await fs.copyFile(setupJsonPath, path.join(projectDir, 'setup.json'))
+  // Copy the entire template directory to the new project directory
+  const templateDir = template.directory
+  await fs.cp(templateDir, projectDir, { recursive: true });
 
   const projectData = {
     ...template,
     projectDirectory: projectDir
   }
 
+  // Create a setup.json file in the new project directory with the project data
+  const setUpPath = path.join(projectDir, 'setup.json')
+  await fs.writeFile(setUpPath, JSON.stringify(projectData))
+
   const projectsDb = Datastore.create({ filename: path.join(app.getPath('userData'), 'projects', 'projects.db'), autoload: true })
   await projectsDb.insert(projectData)
 })
+
+ipcMain.handle('get-all-projects', async (event) => {
+  const projectsDb = Datastore.create({ filename: path.join(app.getPath('userData'), 'projects', 'projects.db'), autoload: true });
+  const allProjects = await projectsDb.find({});
+  return allProjects;
+});
+
+ipcMain.handle('get-project-by-id', async (event, projectId) => {
+  const projectsDb = Datastore.create({ filename: path.join(app.getPath('userData'), 'projects', 'projects.db'), autoload: true });
+  const project = await projectsDb.findOne({ _id: projectId });
+  return project;
+});
+
+ipcMain.handle('read-plugin-file', async (event, filePath) => {
+  try {
+
+    const content = await fs.readFile(filePath, 'utf-8');
+    const modifiedScriptText = content
+
+    return modifiedScriptText;
+  } catch (error) {
+    throw error;
+  }
+});

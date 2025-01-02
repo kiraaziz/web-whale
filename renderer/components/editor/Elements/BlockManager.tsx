@@ -6,10 +6,11 @@ type CustomBlockManagerProps = Pick<
     'mapCategoryBlocks' | 'dragStart' | 'dragStop'
 > & {
     setSelectedElement: (element: any) => void,
-    setIsPreview: (element: any) => void
+    setIsPreview: (element: any) => void,
+    project: any,
 }
 
-export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPreview }: CustomBlockManagerProps) {
+export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPreview, project }: CustomBlockManagerProps) {
 
     function getImageSrc(htmlString: any) {
         const match = htmlString.match(/<img[^>]*src="([^"]+)"/);
@@ -37,7 +38,7 @@ export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPrev
                                 {/* {JSON.stringify(block.getId())} */}
                                 {block.getMedia() && (
                                     <div className='w-full relative'>
-                                        <img src={getImageSrc(block.getMedia())} />
+                                        <img src= {("asset://" + project.projectDirectory + "/preview/" + (block.getMedia()).split('/').slice(-2).join('/').replaceAll("\" />", ""))} />
                                         <div className='absolute h-full w-full bg-transparent z-10 top-0' />
                                     </div>
                                 )}

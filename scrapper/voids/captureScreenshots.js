@@ -27,8 +27,17 @@ async function captureScreenshots(rootPath, isHeadless, browserPath, rootDom) {
 
             const lastSection = await page.$(`${rootDom}:last-of-type`)
 
-            // Take a screenshot of the last <section> only
-            await lastSection.screenshot({ path: imageFilePath })
+            if (lastSection) {
+                const boundingBox = await lastSection.boundingBox();
+                if (boundingBox && boundingBox.height > 0) {
+                    // Take a screenshot of the last <section> only
+                    await lastSection.screenshot({ path: imageFilePath });
+                } else {
+                    console.error(`Skipping screenshot for ${file}: Element has 0 height.`);
+                }
+            } else {
+                console.error(`Skipping screenshot for ${file}: Selector not found.`);
+            }
 
             fs.unlinkSync(htmlFilePath)
             await page.close()

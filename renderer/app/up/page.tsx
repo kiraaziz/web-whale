@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link';
 
 interface FileResult {
     canceled: boolean;
@@ -66,16 +67,20 @@ const FileUpload: React.FC = () => {
             >
                 {isUploading ? 'Uploading...' : 'Upload .whale file'}
             </Button>
-            <div className='grid grid-cols-3 gap-2'>
+            <div className='grid grid-cols-2 my-5 gap-2'>
                 {templates.map(template => (
-                    <div key={template.ID} onClick={() => handleTemplateClick(template)}>
-                        <h1>{template.name.charAt(0).toUpperCase() + template.name.slice(1)}</h1>
-                        {template.structure.preview.slice(0, 3).map((previewFile, index) => (
-                            <img key={index} src={`asset://${template.directory}/preview/${previewFile}`} alt="Preview" />
-                        ))}
+                    <div key={template.ID} onClick={() => handleTemplateClick(template)} className='border bg-muted rounded-md space-y-1 p-2'>
+                        <h1 className='text-xl font-bold'>{template.name.charAt(0).toUpperCase() + template.name.slice(1)}</h1>
+                        {`asset://${template.directory}/meta/preview.png`}
+                        <img src={`asset://${template.directory}/meta/preview.png`} alt="Preview" className='rounded-md' />
                     </div>
                 ))}
             </div>
+            <Link href="/project">
+                <Button>
+                    Projects
+                </Button>
+            </Link>
         </div>
     );
 }
