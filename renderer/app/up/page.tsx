@@ -59,7 +59,7 @@ const FileUpload: React.FC = () => {
     }
 
     return (
-        <div className='p-5'>
+        <div className='p-5 overflow-auto'>
             <Button
                 onClick={handleFileUpload}
                 disabled={isUploading}

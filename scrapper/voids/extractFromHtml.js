@@ -96,7 +96,6 @@ async function processCssFiles(cssContent, sheetUrl, baseUrl) {
 async function fetchCssFiles(cssUrls, url, cssDir, addImportant) {
     return Promise.all(cssUrls.map(async (cssUrl) => {
         try {
-
             const absoluteUrl = new URL(cssUrl, url).href
             const response = await fetch(absoluteUrl)
             if (!response.ok) throw new Error(`Failed to fetch CSS: ${response.statusText}`)

@@ -27,7 +27,8 @@ const ScrapLite = async (name, after = "demoblocks", isReverse = false) => {
 
 const RunApp = async () => {
     // await ScrapLite("flexm5")
-    await ScrapLite("coolm5")
+    // await ScrapLite("coolm5")
+    await ScrapLite("valuem5")
     // await ScrapLite("nutritionm5")
     // await ScrapLite("servicem5")
     // await ScrapLite("ridem5")

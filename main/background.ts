@@ -58,7 +58,7 @@ if (isProd) {
     await mainWindow.loadURL('app://./home')
   } else {
     const port = process.argv[2]
-    await mainWindow.loadURL(`http://localhost:${port}/up`)
+    await mainWindow.loadURL(`http://localhost:${port}`)
   }
 })()
 
@@ -124,6 +124,12 @@ ipcMain.handle('get-templates', async () => {
   return docs
 })
 
+ipcMain.handle('delete-template', async (event, templateId) => {
+  const templatesDb = Datastore.create({ filename: path.join(app.getPath('userData'), 'templates', 'templates.db'), autoload: true });
+  await templatesDb.remove({ _id: templateId }, {});
+  return { success: true };
+});
+
 ipcMain.handle('send-template-data', async (event, template) => {
   const ID = v4()
   const projectDir = path.join(app.getPath('userData'), 'projects', ID)
@@ -162,12 +168,23 @@ ipcMain.handle('get-project-by-id', async (event, projectId) => {
   return project;
 });
 
+ipcMain.handle('delete-project', async (event, projectId) => {
+  const projectsDb = Datastore.create({ filename: path.join(app.getPath('userData'), 'projects', 'projects.db'), autoload: true });
+  await projectsDb.remove({ _id: projectId }, {});
+  return { success: true };
+});
+
+ipcMain.handle('update-project-state', async (event, projectId, newState) => {
+  const projectDir = path.join(app.getPath('userData'), 'projects', projectId);
+  const projectStatePath = path.join(projectDir, 'projectState.json');
+  await fs.writeFile(projectStatePath, JSON.stringify(newState));
+  return { success: true };
+});
+
 ipcMain.handle('read-plugin-file', async (event, filePath) => {
   try {
-
     const content = await fs.readFile(filePath, 'utf-8');
     const modifiedScriptText = content
-
     return modifiedScriptText;
   } catch (error) {
     throw error;
