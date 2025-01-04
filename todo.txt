@@ -1,8 +1,8 @@
 - undo/redo active state color on icons
 x - full screen total
 x - full screen delete padding
--- project setting (name , favicon , description)
--- page setting (add file name)
+- project setting (name , favicon , description)
+- page setting (add file name)
 x- donwload full site
     x - css
     x - js
@@ -12,14 +12,38 @@ x- donwload full site
     - pages
 x/2 - bottom space to simple the drop and drag
 - image upload components
-- setup final plugins (themplates , tailwind, default components, others)
-- enhance UI
-- test
+x - setup final plugins (themplates , tailwind, default components, others)
+x - enhance UI
+x - test
 
 x - simple landing page
-- workspace setting (add project , delete project)
-- access project
+x - workspace setting (add project , delete project)
+x - access project
 x - login / register (simple github and google)
-- add netlify hosting
+x - add netlify hosting
 x - other pages (as section in landign page)
 x - marketing videos
+
+
+- desktop app
+    x list projects
+    x create project 
+    x delete project 
+    x access project
+    - change project (state and data)
+
+    x add pluggin
+    x show pluggin
+    - delete plugin
+    - setup project
+
+- future
+    - netlify hosting
+    - ai integration
+    - code editor
+    - extra developer plugins
+- work on home layout and error handler
+-setup project meta data 
+- make it stable
+- Test
+- think more

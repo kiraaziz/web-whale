@@ -52,7 +52,7 @@ const FileUpload: React.FC = () => {
 
     const handleTemplateClick = async (template) => {
         try {
-            await (window as any).electron.invoke('send-template-data', template);
+            await (window as any).electron.invoke('create-project', template);
         } catch (error) {
             console.error('Error sending template data:', error);
         }
