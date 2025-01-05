@@ -390,7 +390,7 @@ export default function EditorLayout({ values, template, project }: any) {
         storageManager: false,
         canvas: {
           scripts: project.structure.js.map((v: any) => { return `asset://${project.projectDirectory}/js/${v}` }),
-          styles: project.structure.css.map((v: any) => { return `asset://${project.projectDirectory}/css/${v}` }).reverse()
+          styles: project.structure.css.map((v: any) => { return `asset://${project.projectDirectory}/css/${v}` }) 
         },
       }}>
       <div className={`flex w-full flex-col h-[100svh]`}>
