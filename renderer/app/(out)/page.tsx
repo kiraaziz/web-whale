@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { Button } from '@/components/ui/button'; // Import Button component
+import { Button } from '@/components/ui/button' 
 
 const FileUpload: React.FC = () => {
 
@@ -13,8 +13,7 @@ const FileUpload: React.FC = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                // Only run if window.electron exists
-                if (typeof window !== 'undefined' && (window as any).electron?.invoke) {
+                if ((window as any).electron?.invoke) {
                     const projects = await (window as any).electron.invoke('get-all-projects')
                     setProjects(projects)
                 }
@@ -25,8 +24,10 @@ const FileUpload: React.FC = () => {
             }
         }
         
-        fetchProjects()
-    }, []) // Remove window from dependencies
+        if(typeof window !== 'undefined'){
+            fetchProjects()
+        }
+    }, [])  
 
     const handleDelete = async (projectId: string, pathId: string) => {
         try {

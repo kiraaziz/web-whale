@@ -1,9 +1,9 @@
 {
-  "private": true,
-  "name": "my-nextron-app",
-  "description": "My application description",
+  "private":  false,
+  "name": "web-whale",
+  "description": "WebWhale: A versatile website builder",
   "version": "1.0.0",
-  "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
+  "author": "Kira Aziz <kiraaziz2020@gmail.com>",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",
@@ -77,6 +77,7 @@
     "autoprefixer": "^10.4.20",
     "electron": "^31.0.1",
     "electron-builder": "^24.13.3",
+    "electron-icon-maker": "^0.0.5",
     "next": "^14.2.4",
     "nextron": "^9.4.0",
     "postcss": "^8.4.49",

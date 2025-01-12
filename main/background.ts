@@ -50,13 +50,13 @@ if (isProd) {
   })
 
   const mainWindow = createWindow('main', {
-    width: 1000,
+    width: 800,
     height: 600,
-    // autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
+      preload: path.join(__dirname, 'preload.js')
+    }
   })
+
   if (isProd) {
     await mainWindow.loadURL('app://.')
   } else {
@@ -127,7 +127,6 @@ ipcMain.handle('get-templates', async () => {
   const docs = await nedb.find({})
   return docs
 })
-
 
 
 ipcMain.handle('read-plugin-file', async (event, filePath) => {

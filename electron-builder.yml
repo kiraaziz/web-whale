@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: com.light-ai.webwhale
+productName: WebWhale
+copyright: Copyright © 2025 Light AI
 directories:
   output: dist
   buildResources: resources
@@ -10,3 +10,10 @@ files:
       - package.json
       - app
 publish: null
+mac:
+  icon: resources/icons/mac/icon.icns
+win:
+  icon: resources/icons/win/icon.ico
+linux:
+  icon: resources/icons/png/icon.png
+ 
