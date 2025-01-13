@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain, dialog, protocol, shell } from 'electron'
+import { app, ipcMain, dialog, protocol, screen } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 import fs from 'fs/promises'
@@ -8,6 +8,8 @@ import { z } from "zod"
 import Datastore from 'nedb-promises'
 import { readPluginFile, getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
 import { setupTitlebar, attachTitlebarToWindow } from "custom-electron-titlebar/main";
+ 
+
 
 // setup the titlebar main process
 setupTitlebar();
@@ -49,9 +51,13 @@ if (isProd) {
     callback({ path: filePath })
   })
 
+  const primaryDisplay = screen.getPrimaryDisplay();
+const { width, height } = primaryDisplay.workAreaSize;
+
   const mainWindow = createWindow('main', {
-    width: 800,
-    height: 600,
+    width: width,
+    height: height,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }

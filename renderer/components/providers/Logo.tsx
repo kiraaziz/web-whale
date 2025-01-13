@@ -1,8 +1,9 @@
+import { cn } from '@/lib/utils'
 import React from 'react'
 
-export default function Logo() {
+export default function Logo({ className }: { className?: string }) {
     return (
-        <svg className='fill-primary w-9' xmlns="http://www.w3.org/2000/svg"
+        <svg className={cn('fill-primary w-9', className)} xmlns="http://www.w3.org/2000/svg"
             width="800px" height="800px" viewBox="0 0 256 256" enable-background="new 0 0 256 256" >
             <path d="M244.311,143.467c0,0-173.441,0-174.859,0c-19.77,0-35.7-15.792-35.7-35.562c0-9.787,3.938-18.648,10.299-25.116
 	l23.137,23.137c13.4,13.4,35.129,13.4,48.529,0L80.401,70.609c-8.369-8.359-21.424-9.127-30.679-2.353

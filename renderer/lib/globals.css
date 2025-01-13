@@ -54,3 +54,70 @@
   @apply border-input pointer-events-auto;
 }
   
+
+.bg{
+  position: fixed;
+  z-index: 100;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 150%;
+  height: 200vh;
+  background: url(https://indieground.net/wp-content/uploads/2023/01/noise-01.png)repeat;
+  background-repeat: repeat;
+  opacity: .7;
+  visibility: visible;
+  pointer-events: none;
+  display: block
+}
+
+@font-face {
+    font-family: 'Righteous';
+    src: url('/fonts/Righteous.ttf') format('truetype');
+}
+
+.fancy-font {
+    font-family: 'Righteous', sans-serif;
+}
+
+@font-face {
+  font-family: 'Geist-Black';
+  src: url('/fonts/Geist/Geist-Black.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-Bold';
+  src: url('/fonts/Geist/Geist-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-ExtraBold';
+  src: url('/fonts/Geist/Geist-ExtraBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-ExtraLight';
+  src: url('/fonts/Geist/Geist-ExtraLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-Light';
+  src: url('/fonts/Geist/Geist-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-Medium';
+  src: url('/fonts/Geist/Geist-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-Regular';
+  src: url('/fonts/Geist/Geist-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-SemiBold';
+  src: url('/fonts/Geist/Geist-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Geist-Thin';
+  src: url('/fonts/Geist/Geist-Thin.ttf') format('truetype');
+}
+
+body {
+  font-family: 'Geist-Regular', sans-serif;
+}

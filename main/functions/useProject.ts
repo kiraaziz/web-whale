@@ -48,6 +48,7 @@ async function createProject(template) {
         const projectData = {
             ...templateWithoutId,
             name: `untitled-${v4().slice(0, 7)}`,
+            templateName: template.name,
             projectDirectory: projectDir
         }
 

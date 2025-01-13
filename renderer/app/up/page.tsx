@@ -70,6 +70,7 @@ const FileUpload: React.FC = () => {
             <div className='grid grid-cols-2 my-5 gap-2'>
                 {templates.map(template => (
                     <div key={template.ID} onClick={() => handleTemplateClick(template)} className='border bg-muted rounded-md space-y-1 p-2'>
+                        {template.name}
                         <h1 className='text-xl font-bold'>{template.name.charAt(0).toUpperCase() + template.name.slice(1)}</h1>
                         {`asset://${template.directory}/meta/preview.png`}
                         <img src={`asset://${template.directory}/meta/preview.png`} alt="Preview" className='rounded-md' />

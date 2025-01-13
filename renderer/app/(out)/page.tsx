@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { Button } from '@/components/ui/button' 
+import { Button } from '@/components/ui/button'
 
 const FileUpload: React.FC = () => {
 
@@ -23,15 +23,15 @@ const FileUpload: React.FC = () => {
                 setLoading(false)
             }
         }
-        
-        if(typeof window !== 'undefined'){
+
+        if (typeof window !== 'undefined') {
             fetchProjects()
         }
-    }, [])  
+    }, [])
 
     const handleDelete = async (projectId: string, pathId: string) => {
         try {
-            await (window as any).electron.invoke('delete-project', {projectId, pathId});
+            await (window as any).electron.invoke('delete-project', { projectId, pathId });
             setProjects(projects.filter(project => project._id !== projectId));
         } catch (error) {
             alert('Error deleting project: ' + error.message);
@@ -42,20 +42,14 @@ const FileUpload: React.FC = () => {
     if (error) return <div><Link href="/up">Error: {error}</Link></div>;
 
     return (
-        <div className='p-5'>
-            <h1 className='mt-5 font-bold text-2xl'>Projects</h1>
-            <div className='grid grid-cols-2 gap-5'>
+        <div className='p-5 max-w-7xl mx-auto'>
+            <div className='grid grid-cols-3 gap-3'>
                 {projects.map((project) => (
-                    <div key={project._id} className='h-96 overflow-hidden relative p-5 bg-muted rounded-xl border'>
-                        <Link href={`/project?id=${project._id}`}>
-                            <img src={`asset://${project.projectDirectory}/meta/preview.png`} alt="Preview" className='opacity-50 blur-3xl absolute inset-0 h-full w-full object-cover' />
-                            <div className='absolute inset-0 h-full w-full p-3'>
-                                <img src={`asset://${project.projectDirectory}/meta/preview.png`} alt="Preview" className='h-full w-full object-cover object-left-top rounded' />
-                            </div>
-                            <h1 className='text-2xl font-bold absolute bottom-0 left-0 w-full p-3 text-background'>{project.name}</h1>
-                        </Link> 
-                        <Button onClick={() => handleDelete(project._id, project.projectDirectory)} className='absolute top-3 right-3'>Delete {project._id}</Button> {/* Delete button added */}
-                    </div>
+                    <Link key={project._id} href={`/project?id=${project._id}`}>
+                        <img className='object-cover w-full h-44 object-left-top rounded-lg border p-1 bg-muted' src={`asset://${project.projectDirectory}/meta/preview.png`} alt="Preview" />
+                        <h1 className='text-base px-3'>{project.name}</h1>
+                        <p className='text-xs text-muted-foreground mb-5 px-3'>{project.templateName ? (project.templateName.charAt(0).toUpperCase() + project.templateName.slice(1)) : "Blank"}</p>
+                    </Link>
                 ))}
             </div>
         </div>
