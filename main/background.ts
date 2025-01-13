@@ -1,39 +1,10 @@
 import path from 'path'
-import { app, ipcMain, dialog, protocol, screen } from 'electron'
 import serve from 'electron-serve'
+import { app, ipcMain, protocol } from 'electron'
 import { createWindow } from './helpers'
-import fs from 'fs/promises'
-import AdmZip from 'adm-zip'
-import { z } from "zod"
-import Datastore from 'nedb-promises'
-import { readPluginFile, getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
-import { setupTitlebar, attachTitlebarToWindow } from "custom-electron-titlebar/main";
-
-
-
-// setup the titlebar main process
-setupTitlebar();
-const SetupSchema = z.object({
-  base: z.string(),
-  options: z.object({
-    baseDirPath: z.string(),
-    url: z.string().url(),
-    isHeadless: z.boolean(),
-    addImportant: z.boolean(),
-    browserPath: z.string(),
-    rootDom: z.string(),
-  }),
-  structure: z.object({
-    css: z.array(z.string()),
-    root: z.array(z.string()),
-    fonts: z.array(z.string()),
-    img: z.array(z.string()),
-    js: z.array(z.string()),
-    preview: z.array(z.string()),
-  }),
-  name: z.string(),
-  isReverse: z.boolean(),
-})
+import { readPluginFile } from './utils/readPluginFile'
+import { deleteTemplate, getAllTemplates, openWhaleFileDialog, savePlugin } from './functions/usePlugins'
+import { getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -51,12 +22,9 @@ if (isProd) {
     callback({ path: filePath })
   })
 
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
-
   const mainWindow = createWindow('main', {
-    width: width / 2,
-    height: height / 2,
+    width: 1400,
+    height: 800,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -76,88 +44,23 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
-ipcMain.handle('select-file', async () => {
-  return dialog.showOpenDialog({
-    properties: ['openFile'],
-    filters: [{ name: 'Whale Files', extensions: ['whale'] }]
-  })
-})
+// Utils and file operations
+ipcMain.handle('upload-plugin', async (event) => await openWhaleFileDialog())
+ipcMain.handle('save-plugin', async (event, sourcePath) => await savePlugin(sourcePath))
 
-ipcMain.handle('process-whale-file', async (event, sourcePath) => {
-  try {
-    const zip = new AdmZip(sourcePath)
-    const setupJsonEntry = zip.getEntry('setup.json')
-    if (!setupJsonEntry) {
-      throw new Error('Setup file not found in the whale file')
-    }
-    const setupJson = setupJsonEntry.getData().toString('utf-8')
-    const setup = JSON.parse(setupJson)
-    const isValid = SetupSchema.safeParse(setup).success
-    if (!isValid) {
-      throw new Error('Invalid setup configuration.')
-    }
-    const baseId = setup.base
+// Read file for css and js files
+ipcMain.handle('read-plugin-file', async (event, filePath) => await readPluginFile(filePath))
 
-    const templatesDir = path.join(app.getPath('userData'), 'templates', baseId)
-    await fs.mkdir(templatesDir, { recursive: true })
+// Templates
+ipcMain.handle('get-all-templates', async (event) => await getAllTemplates())
+ipcMain.handle('delete-template', async (event, templateBaseId) => await deleteTemplate(templateBaseId))
 
-    zip.extractAllTo(templatesDir, true)
-
-    const setupJsonPath = path.join(templatesDir, 'setup.json')
-    await fs.writeFile(setupJsonPath, setupJson)
-
-    const zipFilePath = path.join(templatesDir, `template.whale`)
-    await fs.writeFile(zipFilePath, Buffer.from(zip.toBuffer()))
-
-    const finalData = {
-      ...setup,
-      ID: baseId,
-      directory: templatesDir,
-    }
-
-    const nedb = Datastore.create({ filename: path.join(templatesDir, "..", 'templates.db'), autoload: true })
-    const existingDoc = await nedb.findOne({ base: baseId })
-    if (!existingDoc) {
-      await nedb.insert(finalData)
-    } else {
-      throw new Error('Record with base ID already exists.')
-    }
-    return { success: true }
-  } catch (error) {
-    throw error
-  }
-})
-
-ipcMain.handle('get-templates', async () => {
-  const nedb = Datastore.create({ filename: path.join(app.getPath('userData'), 'templates', 'templates.db'), autoload: true })
-  const docs = await nedb.find({})
-  return docs
-})
-
-
-ipcMain.handle('read-plugin-file', async (event, filePath) => {
-  return await readPluginFile(filePath)
-})
-
-ipcMain.handle('get-all-projects', async () => {
-  return await getAllProjects()
-})
-
-ipcMain.handle('get-project-by-id', async (event, projectId) => {
-  return await getProjectById(projectId)
-})
-
-ipcMain.handle('create-project', async (event, template) => {
-  return await createProject(template)
-})
-
-ipcMain.handle('update-project', async (event, projectId, newData) => {
-  return await updateProject(projectId, newData)
-})
-
-ipcMain.handle('delete-project', async (event, data) => {
-  return await deleteProject(data)
-})
+// Projects
+ipcMain.handle('get-all-projects', async () => await getAllProjects())
+ipcMain.handle('get-project-by-id', async (event, projectId) => await getProjectById(projectId))
+ipcMain.handle('create-project', async (event, template) => await createProject(template))
+ipcMain.handle('update-project', async (event, projectId, newData) => await updateProject(projectId, newData))
+ipcMain.handle('delete-project', async (event, data) => await deleteProject(data))
 
 
 

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Grid2x2, Plus, Search } from 'lucide-react';
 import { useHelfText } from '@/hooks/useState';
 import { Input } from '@/components/ui/input';
+import PluginProvider from '@/components/plugins/PluginProvider';
 
 const FileUpload: React.FC = () => {
 
@@ -69,12 +70,7 @@ const FileUpload: React.FC = () => {
                             <Plus className='w-4 h-4' />
                             Create Project
                         </Button>
-                        <Link href="/up">
-                            <Button variant='outline' className='rounded-full'>
-                                <Grid2x2 className='w-4 h-4' />
-                                Templates
-                            </Button>
-                        </Link>
+                        <PluginProvider />
                     </div>
                     <div
                         className='max-w-sm rounded-full w-full flex items-center justify-center relative'>

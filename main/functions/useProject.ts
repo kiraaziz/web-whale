@@ -3,17 +3,7 @@ import { app } from 'electron'
 import { v4 } from 'uuid'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import { projectsDb } from '../helpers/db'
-
-async function readPluginFile(filePath) {
-    try {
-        const content = await fsPromises.readFile(filePath, 'utf-8')
-        const modifiedScriptText = content
-        return modifiedScriptText
-    } catch (error) {
-        throw error
-    }
-}
+import { projectsDb } from '../utils/databaseSetup'
 
 async function getAllProjects() {
     try {
@@ -85,4 +75,4 @@ async function deleteProject(projectData) {
     }
 }
 
-export { readPluginFile, getAllProjects, getProjectById, createProject, updateProject, deleteProject }
+export { getAllProjects, getProjectById, createProject, updateProject, deleteProject }

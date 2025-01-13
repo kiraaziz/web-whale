@@ -1,10 +1,11 @@
 import { ThemeProvider } from "@/components/providers/theme"
 import { cn } from "@/lib/utils"
 import "@/lib/globals.css"
- 
+import { Toaster } from "@/components/ui/sonner"
+
 
 export default function RootLayout({ children }: any) {
- 
+
   return (
     <html lang="en">
       <head>
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: any) {
           <div className="w-full h-full  overflow-hidden">
             {children}
           </div>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html >
