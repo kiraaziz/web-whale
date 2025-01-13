@@ -1,12 +1,10 @@
 "use client"
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import Logo from '@/components/providers/Logo';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { visitePages, websiteLink } from '@/utils/constant';
+
 
 export default function Layout({ children }) {
-
 
     return (
         <div className="flex h-screen w-screen bg-muted/20 flex-col items-center justify-center">
@@ -25,17 +23,23 @@ export default function Layout({ children }) {
                         </div>
                     </div>
                 </div>
-                <div className='w-full h-full overflow-auto flex-1'> 
+                <div className='w-full h-full overflow-auto flex-1'>
                     {children}
                 </div>
             </div>
             <div className='h-[3rem] w-full bg-muted/40 backdrop-blur-sm border-t flex justify-center items-center gap-3 text-xs text-muted-foreground relative'>
                 <div className='w-2/3 blur-3xl -translate-x-1/4 right-0 -z-10 h-4 top-0 -translate-y-1/2 bg-primary absolute opacity-50'></div>
-                <a href="#">Terms</a> |
-                <a href="#">Privacy</a> |
-                <a href="#">Cookies</a> |
-                <a href="#">Ads Info</a> |
-                <a href="#">More</a>
+                {visitePages.map((page, index) => (
+                    <>
+                        <a
+                            href="#"
+                            onClick={() => window.open(`${websiteLink}/${page}`, '_blank')}
+                            key={index}>
+                            {page.charAt(0).toUpperCase() + page.slice(1)}
+                        </a>
+                        {index < visitePages.length - 1 && <span>|</span>}
+                    </>
+                ))}
             </div>
             <div className='bg !-z-10'></div>
         </div>

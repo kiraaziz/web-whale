@@ -8,7 +8,7 @@ import { z } from "zod"
 import Datastore from 'nedb-promises'
 import { readPluginFile, getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
 import { setupTitlebar, attachTitlebarToWindow } from "custom-electron-titlebar/main";
- 
+
 
 
 // setup the titlebar main process
@@ -52,14 +52,14 @@ if (isProd) {
   })
 
   const primaryDisplay = screen.getPrimaryDisplay();
-const { width, height } = primaryDisplay.workAreaSize;
+  const { width, height } = primaryDisplay.workAreaSize;
 
   const mainWindow = createWindow('main', {
-    width: width,
-    height: height,
+    width: width / 2,
+    height: height / 2,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     }
   })
 

@@ -3,12 +3,13 @@ import { cn } from "@/lib/utils"
 import "@/lib/globals.css"
  
 
-export default async function RootLayout({ children }: any) {
+export default function RootLayout({ children }: any) {
  
   return (
     <html lang="en">
       <head>
         <title>Web Whale</title>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={cn("text-foreground w-screen bg-background p-0 m-0 flex flex-col overflow-hidden !pb-0")

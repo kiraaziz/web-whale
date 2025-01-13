@@ -4,29 +4,8 @@
 
 @layer base {
   :root {
-    --background: 217 65% 100%;
-    --foreground: 217 69% 1%;
-    --muted: 217 10% 94%;
-    --muted-foreground: 217 8% 27%;
-    --popover: 0 0% 99%;
-    --popover-foreground: 0 0% 0%;
-    --card: 0 0% 99%;
-    --card-foreground: 0 0% 0%;
-    --border: 217 14% 90%;
-    --input: 217 14% 90%;
-    --primary: 217 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 16% 84%;
-    --secondary-foreground: 217 16% 24%;
-    --accent: 217 16% 84%;
-    --accent-foreground: 217 16% 24%;
-    --destructive: 2 87% 43%;
-    --destructive-foreground: 0 0% 100%;
-    --ring: 217 100% 50%;
     --radius: 0.5rem;
-  }
 
-  .dark {
     --background: 217 44.3% 3.2%;
     --foreground: 217 24% 97%;
     --muted: 217 10% 6%;
@@ -53,9 +32,9 @@
 * {
   @apply border-input pointer-events-auto;
 }
-  
 
-.bg{
+
+.bg {
   position: fixed;
   z-index: 100;
   top: -50%;
@@ -73,46 +52,54 @@
 }
 
 @font-face {
-    font-family: 'Righteous';
-    src: url('/fonts/Righteous.ttf') format('truetype');
+  font-family: 'Righteous';
+  src: url('/fonts/Righteous.ttf') format('truetype');
 }
 
 .fancy-font {
-    font-family: 'Righteous', sans-serif;
+  font-family: 'Righteous', sans-serif;
 }
 
 @font-face {
   font-family: 'Geist-Black';
   src: url('/fonts/Geist/Geist-Black.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-Bold';
   src: url('/fonts/Geist/Geist-Bold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-ExtraBold';
   src: url('/fonts/Geist/Geist-ExtraBold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-ExtraLight';
   src: url('/fonts/Geist/Geist-ExtraLight.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-Light';
   src: url('/fonts/Geist/Geist-Light.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-Medium';
   src: url('/fonts/Geist/Geist-Medium.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-Regular';
   src: url('/fonts/Geist/Geist-Regular.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-SemiBold';
   src: url('/fonts/Geist/Geist-SemiBold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: 'Geist-Thin';
   src: url('/fonts/Geist/Geist-Thin.ttf') format('truetype');
@@ -120,4 +107,107 @@
 
 body {
   font-family: 'Geist-Regular', sans-serif;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  /* width of the entire scrollbar */
+  transition: width 0.3s ease;
+  /* smooth transition for width change */
+}
+
+::-webkit-scrollbar:hover {
+  width: 15px;
+  /* increased width on hover */
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  /* make track background transparent */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary));
+  /* color of the scroll thumb */
+  border-radius: 6px;
+  /* roundness of the scroll thumb */
+  border: 3px solid hsl(var(--primary));
+  /* creates padding around scroll thumb */
+}
+
+.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 6rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation: pulsOut 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 1rem hsl(var(--primary)));
+}
+
+.loader:before {
+  width: 100%;
+  padding-bottom: 100%;
+  box-shadow: inset 0 0 0 1rem  hsl(var(--primary));
+  animation-name: pulsIn;
+}
+
+.loader:after {
+  width: calc(100% - 2rem);
+  padding-bottom: calc(100% - 2rem);
+  box-shadow: 0 0 0 0  hsl(var(--primary));
+}
+
+@keyframes pulsIn {
+  0% {
+    box-shadow: inset 0 0 0 1rem  hsl(var(--primary));
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    box-shadow: inset 0 0 0 0  hsl(var(--primary));
+    opacity: 0;
+  }
+}
+
+@keyframes pulsOut {
+
+  0%,
+  50% {
+    box-shadow: 0 0 0 0  hsl(var(--primary));
+    opacity: 0;
+  }
+
+  100% {
+    box-shadow: 0 0 0 1rem  hsl(var(--primary));
+    opacity: 1;
+  }
+}
+
+.project-card {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
