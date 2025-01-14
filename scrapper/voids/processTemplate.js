@@ -61,7 +61,7 @@ async function processTemplate({
             return processedSection
         })
 
-        const previewScreenShot = processedSectionsSave.slice(0, 2).join('\n')
+        const previewScreenShot = processedSectionsSave.slice(0, Math.min(processedSectionsSave.length, 4)).join('\n')
 
         await generateSectionHtmlFilesPreview(previewScreenShot, baseDir, cssFiles, jsFiles, baseDir, isHeadless, browserPath, rootDom)
         // return
@@ -102,7 +102,16 @@ async function processTemplate({
         const pluginFileName = generateRandomName('.js')
         fs.writeFileSync(path.join(baseDir, pluginFileName), pluginCode)
 
-        const structure = await getFlatStructure(baseDir);
+        const structure = {
+            js: jsFiles,   
+            css: cssFiles,
+            img: imgFiles.map(img => img.fileName),
+            fonts: fontFiles,
+            preview: previews,
+            root: [pluginFileName],
+            meta: ["preview.png"]
+        }
+
         return {
             base: path.basename(baseDir),
             options: {

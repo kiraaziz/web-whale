@@ -10,7 +10,7 @@ function zipFiles(name, data) {
         console.log(`Archive created: ${archive.pointer()} total bytes`);
         // Delete the data folders after the archive is created
         const baseDir = path.resolve(data.options.baseDirPath, data.base);
-        fs.rmdirSync(baseDir, { recursive: true });
+        fs.rmSync(baseDir, { recursive: true, force: true });
     });
 
     archive.on('error', function (err) {
