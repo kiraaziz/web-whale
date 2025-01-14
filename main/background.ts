@@ -1,10 +1,11 @@
 import path from 'path'
 import serve from 'electron-serve'
-import { app, ipcMain, protocol } from 'electron'
+import { app, ipcMain, protocol, shell } from 'electron'
 import { createWindow } from './helpers'
 import { readPluginFile } from './utils/readPluginFile'
 import { deleteTemplate, getAllTemplates, openWhaleFileDialog, savePlugin } from './functions/usePlugins'
 import { getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
+import { useRedirectToBrowser } from './utils/useRedirectToBrowser'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -40,13 +41,13 @@ if (isProd) {
 
 })()
 
-app.on('window-all-closed', () => {
-  app.quit()
-})
+app.on('window-all-closed', () => app.quit())
 
 // Utils and file operations
 ipcMain.handle('upload-plugin', async (event) => await openWhaleFileDialog())
 ipcMain.handle('save-plugin', async (event, sourcePath) => await savePlugin(sourcePath))
+ipcMain.handle('open-external-url', async (event, url) => await useRedirectToBrowser(url))
+
 
 // Read file for css and js files
 ipcMain.handle('read-plugin-file', async (event, filePath) => await readPluginFile(filePath))

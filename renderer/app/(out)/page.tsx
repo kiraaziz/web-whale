@@ -3,67 +3,31 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { Button } from '@/components/ui/button'
-import { Grid2x2, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useHelfText } from '@/hooks/useState';
 import { Input } from '@/components/ui/input';
 import PluginProvider from '@/components/plugins/PluginProvider';
+import Error from '@/components/ui/Error';
+import useProjects from '@/hooks/useProjects';
 
 const FileUpload: React.FC = () => {
 
-    const [projects, setProjects] = useState<any[]>([]);
-    const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
+    const { filteredProjects, loading, error, searchTerm, setSearchTerm } = useProjects()
 
-    useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                if ((window as any).electron?.invoke) {
-                    const projects = await (window as any).electron.invoke('get-all-projects')
-                    setProjects(projects);
-                    setFilteredProjects(projects);
-                }
-            } catch (error) {
-                setError('Error fetching projects: ' + error.message)
-            } finally {
-                setLoading(false)
-            }
-        }
 
-        if (typeof window !== 'undefined') {
-            fetchProjects()
-        }
-    }, [])
-
-    useEffect(() => {
-        setFilteredProjects([]);
-
-        const results = projects.filter(project =>
-            project.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredProjects(results);
-    }, [searchTerm, projects]);
-
-    if (loading) return <div className='p-5 max-w-7xl mx-auto h-2/3'><div className='flex justify-center items-center h-full w-full'>
+    if (loading) return <div className='p-5 max-w-7xl mx-auto w-full mt-[20svh]'><div className='flex justify-center items-center h-full w-full'>
         <span className="loader"></span>
     </div></div>
 
     if (error) return (
-        <div className='p-5 max-w-7xl mx-auto h-2/3'>
-            <div className='flex justify-center items-center h-full w-full'>
-                <p>Error: {error}</p>
-                <Button onClick={() => window.location.reload()} className='ml-4'>
-                    Refresh
-                </Button>
-            </div>
+        <div className='p-5 max-w-7xl mx-auto  w-full mt-[3svh]'>
+            <Error message='Error fetching projects' />
         </div>
     );
 
     return (
-        <div className='p-5 max-w-7xl mx-auto'>
+        <div className='p-5 max-w-7xl w-full mx-auto'>
             <div className='grid grid-cols-3 gap-3'>
-
                 <div className='col-span-full flex justify-between items-center'>
                     <div className='flex gap-2'>
                         <Button className='rounded-full '>
@@ -84,6 +48,9 @@ const FileUpload: React.FC = () => {
                         <Search className='absolute right-5' size={16} />
                     </div>
                 </div>
+                {filteredProjects.length === 0 && <div className='p-5 max-w-7xl mx-auto h-2/3 pt-[14svh] col-span-full'>
+                    <Error message='Error fetching projects' />
+                </div>}
                 {filteredProjects.map((project, index) => (
                     <div
                         key={project._id}

@@ -1,3 +1,4 @@
+import { toast } from "sonner"
 
 export const setState = (state: any, filed: any, value: any) => {
     state((pre: any) => {
@@ -30,7 +31,11 @@ export const useSizeConvert = (size: any) => {
 }
 
 
-export const useRedirectToBrowser = (url: string) => {
-    // window.location.href = url
-    alert(url)
+export const useRedirectToBrowser = async (url: string) => {
+    try {
+        new URL(url)
+        await (window as any).electron.invoke('open-external-url', url)
+    } catch (error) {
+        toast.error('Invalid URL or failed to open')
+    }
 }
