@@ -5,7 +5,6 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-
     --background: 217 44.3% 3.2%;
     --foreground: 217 24% 97%;
     --muted: 217 10% 6%;
@@ -209,5 +208,20 @@ body {
   to {
       opacity: 1;
       transform: translateY(0);
+  }
+}
+
+.project-card-no-translate {
+  opacity: 0;
+  animation: fadeUpTranslate 0.6s ease-out forwards;
+}
+
+@keyframes fadeUpTranslate {
+  from {
+      opacity: 0;
+      transform: (20px);
+  }
+  to {
+      opacity: 1;
   }
 }

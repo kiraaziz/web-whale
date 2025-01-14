@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const useSoloPlugins = (baseId, reavlidate) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,7 @@ const useSoloPlugins = (baseId, reavlidate) => {
             await reavlidate()
         } catch (err) {
             setError(`Error deleting plugin: ${err.message}`);
+            toast.error(`Error deleting plugin: ${err.message}`);
         } finally {
             setIsLoading(false);
         }

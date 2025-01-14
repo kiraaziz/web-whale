@@ -13,7 +13,7 @@ interface ProcessResult {
 }
 
 interface Template {
-    ID: string
+    base: string
     name: string
     directory: string
 }
@@ -28,6 +28,7 @@ const usePlugins = () => {
 
     const fetchTemplates = async () => {
         setIsLoadingTemplates(true)
+        await new Promise(resolve => setTimeout(resolve, 1000))
         try {
             const fetchedTemplates = await (window as any).electron.invoke('get-all-templates')
             setTemplates(fetchedTemplates)

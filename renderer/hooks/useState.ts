@@ -28,3 +28,9 @@ export const useSizeConvert = (size: any) => {
     }
     return formattedSize
 }
+
+
+export const useRedirectToBrowser = (url: string) => {
+    // window.location.href = url
+    alert(url)
+}
