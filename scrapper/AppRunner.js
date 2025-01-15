@@ -9,7 +9,7 @@ const ScrapLite = async (name, url, after = "demoblocks", isReverse = false, ful
             isHeadless: true,
             addImportant: false,
             browserPath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-            rootDom: 'section',
+            rootDom: 'body>section',
         })
 
         zipFiles(name, {
@@ -44,7 +44,9 @@ const RunApp = async () => {
     // await ScrapLite("dentalm5")
 
     // await ScrapLite("shopm5", "https://mobirise.com/extensions/shopm5/furniture-store/", false, false, true)
-    await ScrapLite("flowm5", "https://mobirise.com/extensions/flowm5/demo-blocks.html", false, false, true)
+    // await ScrapLite("flowm5", "https://mobirise.com/extensions/flowm5/demo-blocks.html", false, false, true)
+    // await ScrapLite("snooze", "https://ovo-snooze.webflow.io/", false, false, true)
+    await ScrapLite("brevo", "https://labs.chaingpt.org/", false, false, true)
     // await ScrapLite("planm5")
     // await ScrapLite("planm5")
     // await ScrapLite("planm5")

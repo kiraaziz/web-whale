@@ -3,6 +3,7 @@ const fsx = require('fs').promises;
 const path = require('path')
 const fetch = require('node-fetch-cache');
 const { generateRandomName } = require('./generateRandomName');
+const cheerio = require('cheerio');
 
 function extractUrlsFromHtml(html, rootDom) {
     const cssLinks = html.match(/<link[^>]*rel="stylesheet"[^>]*href="([^"]*)"[^>]*>/g) || []
@@ -22,9 +23,10 @@ function extractUrlsFromHtml(html, rootDom) {
         const match = img.match(/src="([^"]*)"/)
         return match ? match[1] : null
     }).filter(url => url)
-
-    const sections = html.match(new RegExp(`<(${rootDom})[^>]*>[\\s\\S]*?<\\/${rootDom}>`, 'g')) || []
-
+ 
+    const $ = cheerio.load(html);
+    const sections = $(rootDom).toArray().map(section => $.html(section));
+ 
     return { cssUrls, jsUrls, imgUrls, sections }
 }
 

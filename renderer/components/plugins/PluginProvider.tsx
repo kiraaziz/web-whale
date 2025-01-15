@@ -20,7 +20,7 @@ export default function PluginProvider() {
                 </div></div>
             ) : fetchError ? (
                 <div className='p-10 max-w-7xl mx-auto '>
-                    <Error message={fetchError} />
+                    <Error message={"Error fetching plugins"} />
                 </div>
             ) :
                 templates.length === 0 ? (

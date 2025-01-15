@@ -53,7 +53,7 @@ async function generateSectionHtmlFilesPreview(processedSections, id, cssFiles, 
         generatedPaths.push(pathName.replaceAll("html", "png"))
     }
 
-    await captureScreenshots(previewDir, isHeadless, browserPath, "body" )
+    await captureScreenshots(previewDir, isHeadless, browserPath, "body")
     return generatedPaths
 }
 

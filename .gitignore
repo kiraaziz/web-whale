@@ -12,4 +12,4 @@ next-env.d.ts
 /app
 dist
 
-/renderer/app/public
+scrapper/template

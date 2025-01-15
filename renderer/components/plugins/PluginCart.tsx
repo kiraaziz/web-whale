@@ -17,8 +17,17 @@ export default function PluginCart({ template, reavlidate, index }) {
 
     const { deletePlugin, isLoading } = useSoloPlugins(template.base, reavlidate)
 
+    const handleTemplateClick = async () => {
+        try {
+            await (window as any).electron.invoke('create-project', template);
+        } catch (error) {
+            console.error('Error sending template data:', error);
+        }
+    }
+
     return (
         <div
+            onClick={() => handleTemplateClick()}
             className='project-card-no-translate'
             style={{ animationDelay: `${index * 0.2}s` }}>
             <ImageLoader className='object-cover w-full h-44 object-left-top rounded-lg border p-1 bg-muted' url={`asset://${template.directory}/meta/preview.png`} />

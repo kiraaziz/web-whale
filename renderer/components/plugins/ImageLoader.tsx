@@ -24,7 +24,7 @@ const ImageLoader = ({ url, className }) => {
                 <div className='animate-pulse bg-background h-full w-fulll' />
             </div>}
             {error ? (
-                <div className={cn('overflow-hidden text-destructive w-full h-60 bg-destructive/20 flex items-center justify-center gap-2')}>
+                <div className={cn('overflow-hidden text-destructive w-full bg-destructive/20 flex items-center justify-center gap-2', className)}>
                     <Ban size={20} className='text-destructive' />
                     Error loading image
                 </div>

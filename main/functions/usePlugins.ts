@@ -28,7 +28,7 @@ async function savePlugin(sourcePath: string) {
         const templatesDir = path.join(app.getPath('userData'), 'templates', baseId)
         await fs.mkdir(templatesDir, { recursive: true })
 
-        zip.extractAllTo(templatesDir, true)
+        zip.extractAllTo(templatesDir, true) 
 
         const setupJsonPath = path.join(templatesDir, 'setup.json')
         await fs.writeFile(setupJsonPath, setupJson)
