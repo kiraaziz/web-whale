@@ -5,6 +5,7 @@ import AdmZip from 'adm-zip'
 import { app, dialog } from 'electron'
 import { SetupSchema } from '../utils/SetupSchema'
 import { templatesDb } from '../utils/databaseSetup'
+import { useOptimise } from './useOptimise'
 
 async function savePlugin(sourcePath: string) {
     try {
@@ -36,6 +37,7 @@ async function savePlugin(sourcePath: string) {
         const zipFilePath = path.join(templatesDir, `template.whale`)
         await fs.writeFile(zipFilePath, Buffer.from(zip.toBuffer()))
 
+        await useOptimise(templatesDir)
         const finalData = {
             ...setup,
             ID: baseId,
