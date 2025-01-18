@@ -48,7 +48,7 @@ export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPrev
                                         <div className='text-foreground/60 mt-1 text-sm'>{useHelfText(block.getLabel(), 10)}</div>
                                     </div> :
                                         <div className='w-full relative '>
-                                            <img src={("asset://" + project.projectDirectory + "/preview/" + (block.getMedia()).split('/').slice(-2).join('/').replaceAll("\" />", ""))} />
+                                            <img src={("asset://" + project.projectDirectory + "/preview/" + (block.getMedia()).split('/').slice(-2).join('/').replaceAll("\" />", "")).replace(".", "/5.")} />
                                             <div className='absolute h-full w-full bg-transparent z-10 top-0' />
                                         </div>
                             )}
