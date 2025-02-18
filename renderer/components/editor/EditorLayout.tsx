@@ -14,6 +14,7 @@ import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { useHelfText } from '@/hooks/useState'
 
 export default function EditorLayout({ values, template, project }: any) {
 
@@ -80,7 +81,7 @@ export default function EditorLayout({ values, template, project }: any) {
       }}>
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
-          {editor && <Timers projectName={"website"} />}
+          {editor && <Timers projectName={useHelfText(project.typedName || "Untitled", 10)} />}
           {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={addComplexHtml} />}
 
         </div>
@@ -115,7 +116,7 @@ export default function EditorLayout({ values, template, project }: any) {
               <Canvas className={cn(isPreview ? "fixed z-50 h-screen w-screen top-0 left-0" : "w-full !h-full", " gjs-custom-editor-canvas ")} />
             </div>
           </div>
-        </div> *
+        </div>
       </div>
     </GjsEditor>
   )

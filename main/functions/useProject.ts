@@ -7,7 +7,7 @@ import { projectsDb } from '../utils/databaseSetup'
 
 async function getAllProjects() {
     try {
-        return await (await projectsDb()).find({})
+        return await (await projectsDb()).find({}).sort({name: "asc"})
     } catch (error) {
         throw error
     }
@@ -33,11 +33,11 @@ async function createProject(template) {
 
         const templateDir = template.directory
         await fsPromises.cp(templateDir, projectDir, { recursive: true })
-
+ 
         const { _id, ...templateWithoutId } = template 
         const projectData = {
             ...templateWithoutId,
-            name: `untitled-${v4().slice(0, 7)}`,
+            name: template.typedName ? template.typedName : `untitled-${v4().slice(0, 7)}`,
             templateName: template.name,
             projectDirectory: projectDir
         }
@@ -45,8 +45,8 @@ async function createProject(template) {
         const setUpPath = path.join(projectDir, 'setup.json')
         await fsPromises.writeFile(setUpPath, JSON.stringify(projectData))
 
-        await (await projectsDb()).insert(projectData)
-        return projectData
+        const newProject = await (await projectsDb()).insert(projectData)
+        return newProject
     } catch (error) {
         throw error
     }
@@ -54,7 +54,7 @@ async function createProject(template) {
 
 async function updateProject(projectId, newData) {
     try {
-        const projectStatePath = path.join(app.getPath('userData'), 'projects', projectId, 'projectState.json')
+        const projectStatePath = path.join(app.getPath('userData'), 'projects', 'projectState.json')
         await fs.promises.writeFile(projectStatePath, JSON.stringify(newData))
         return await (await projectsDb()).update({ _id: projectId }, { $set: newData }, {})
     } catch (error) {
@@ -64,10 +64,9 @@ async function updateProject(projectId, newData) {
 
 async function deleteProject(projectData) {
     try { 
+        await (await projectsDb()).remove({ _id: projectData._id }, {})
 
-        await (await projectsDb()).remove({ _id: projectData.projectId }, {})
-
-        const projectDir = path.join(app.getPath('userData'), 'projects', path.basename(projectData.pathId))
+        const projectDir = path.join(projectData.projectDirectory)
         await fs.promises.rmdir(projectDir, { recursive: true })
         return { success: true }
     } catch (error) {

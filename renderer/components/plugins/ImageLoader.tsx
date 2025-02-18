@@ -20,9 +20,9 @@ const ImageLoader = ({ url, className }) => {
 
     return (
         <div className='w-full'>
-            {loading && <div className={cn('overflow-hidden w-full ', className)}>
+            {/* {loading && <div className={cn('overflow-hidden w-full ', className)}>
                 <div className='animate-pulse bg-background h-full w-fulll' />
-            </div>}
+            </div>} */}
             {error ? (
                 <div className={cn('overflow-hidden text-destructive w-full bg-destructive/20 flex items-center justify-center gap-2', className)}>
                     <Ban size={20} className='text-destructive' />

@@ -17,7 +17,7 @@ const handler = {
 
 contextBridge.exposeInMainWorld('ipc', handler)
 contextBridge.exposeInMainWorld('electron', {
-  invoke: (channel, data) => ipcRenderer.invoke(channel, data)
+  invoke: (channel, data) => ipcRenderer.invoke(channel, data),
 });
 
 export type IpcHandler = typeof handler

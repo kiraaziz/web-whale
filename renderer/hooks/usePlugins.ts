@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect } from 'react'
+
+import { create } from 'zustand'
 import { toast } from 'sonner'
 
 interface FileResult {
@@ -18,65 +19,69 @@ interface Template {
     directory: string
 }
 
-const usePlugins = () => {
+interface PluginStore {
+    isUploading: boolean
+    templates: Template[]
+    fetchError: string | null
+    uploadError: string | null
+    isLoadingTemplates: boolean
+    setIsUploading: (value: boolean) => void
+    setTemplates: (templates: Template[]) => void
+    setFetchError: (error: string | null) => void
+    setUploadError: (error: string | null) => void
+    setIsLoadingTemplates: (value: boolean) => void
+    fetchTemplates: () => Promise<void>
+    handleFileUpload: () => Promise<ProcessResult | undefined>
+}
 
-    const [isUploading, setIsUploading] = useState<boolean>(false)
-    const [templates, setTemplates] = useState<Template[]>([])
-    const [fetchError, setFetchError] = useState<string | null>(null)
-    const [uploadError, setUploadError] = useState<string | null>(null)
-    const [isLoadingTemplates, setIsLoadingTemplates] = useState<boolean>(true)
-
-    const fetchTemplates = async () => {
-        setIsLoadingTemplates(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
+const usePlugins = create<PluginStore>((set, get) => ({
+    isUploading: false,
+    templates: [],
+    fetchError: null,
+    uploadError: null,
+    isLoadingTemplates: true,
+    
+    setIsUploading: (value) => set({ isUploading: value }),
+    setTemplates: (templates) => set({ templates }),
+    setFetchError: (error) => set({ fetchError: error }),
+    setUploadError: (error) => set({ uploadError: error }),
+    setIsLoadingTemplates: (value) => set({ isLoadingTemplates: value }),
+    
+    fetchTemplates: async () => {
+        set({ isLoadingTemplates: true })
         try {
             const fetchedTemplates = await (window as any).electron.invoke('get-all-templates')
-            setTemplates(fetchedTemplates)
+            set({ templates: fetchedTemplates })
         } catch (error) {
-            setFetchError(`Error fetching templates: ${(error as Error).message}`)
+            set({ fetchError: `Error fetching templates: ${(error as Error).message}` })
         } finally {
-            setIsLoadingTemplates(false)
+            set({ isLoadingTemplates: false })
         }
-    }
-
-    useEffect(() => {
-        fetchTemplates()
-    }, [])
-
-    const handleFileUpload = async () => {
+    },
+    
+    handleFileUpload: async () => {
         try {
-            setIsUploading(true)
-            setUploadError(null)
-
+            set({ isUploading: true, uploadError: null })
+            
             const result: FileResult = await (window as any).electron.invoke('upload-plugin', {
                 filters: [{ name: 'Whale Files', extensions: ['whale'] }]
             })
-
+            
             if (!result.canceled) {
                 const filePath = result.filePaths[0]
                 const res: ProcessResult = await (window as any).electron.invoke('save-plugin', filePath)
-                await fetchTemplates()
+                await get().fetchTemplates()
                 return res
             }
-
+            
         } catch (error) {
             const errorMessage = `Upload failed: ${(error as Error).message}`
-            setUploadError(errorMessage)
+            set({ uploadError: errorMessage })
             toast.error(errorMessage)
         } finally {
-            setIsUploading(false)
+            set({ isUploading: false })
         }
     }
-
-    return {
-        isUploading,
-        templates,
-        isLoadingTemplates,
-        fetchError,
-        uploadError,
-        handleFileUpload,
-        reavlidate: fetchTemplates
-    }
-}
+}))
 
 export default usePlugins

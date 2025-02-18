@@ -36,12 +36,11 @@ export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPrev
                             onDragEnd={() => {
                                 dragStop(false)
                                 setIsPreview(true)
-                            }}
-                        >
+                            }} >
 
                             {(block.getMedia() || block.getLabel()) && (
                                 block.getLabel().startsWith("<svg") ? <div className='flex flex-col items-center'>
-                                    <svg dangerouslySetInnerHTML={{ __html: block.getLabel() }} className='rounded-xl overflow-hidden'  />
+                                    <svg dangerouslySetInnerHTML={{ __html: block.getLabel() }} className='rounded-xl overflow-hidden' />
                                 </div> :
                                     block.getMedia().startsWith("<svg") ? <div className='flex flex-col items-center py-4'>
                                         <svg dangerouslySetInnerHTML={{ __html: block.getMedia() }} className='w-10 opacity-80 h-10' />
@@ -52,7 +51,6 @@ export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPrev
                                             <div className='absolute h-full w-full bg-transparent z-10 top-0' />
                                         </div>
                             )}
-                            { }
                         </div>
                     ))}
                 </div>

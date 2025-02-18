@@ -40,7 +40,7 @@ export default function Timers({ projectName }: TimersProps) {
             <div className='flex items-center justify-start px-4 gap-4 border-r h-full w-[20em]'>
                 <div className='flex-1 text-foreground/60'>
                     {projectName} / <span className='text-foreground font-semibold'>
-                        {useHelfText(editor.selected?.getName?.() || 'Untitled page', 15)}
+                        {useHelfText(editor.selected?.getName?.() || editor.selected?.getLabel() || 'Untitled page', 15)}
                     </span>
                 </div>
                 <div className='flex items-center justify-center gap-1'>

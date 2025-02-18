@@ -1,61 +1,54 @@
 import React, { useState } from 'react'
 import usePlugins from '../../hooks/usePlugins'
 import AlertBox from './AlertBox'
+import { Loader2 } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useProjects } from '@/hooks/useProjects';
+import { useRouter } from 'next/navigation';
 
 export default function projectSetupProvider() {
 
-    const { templates, isLoadingTemplates, fetchError } = usePlugins();
-    const element = [
-        {name: "Tailwind", value: "tailwind"},
-    ]
-    
-    const [projectData, setProjectData] = useState({ projectName: '', selectedTemplate: '', extraElements: [] });
+    const router = useRouter()
 
-    const handleProjectDataChange = (e) => {
-        const { name, value } = e.target;
-        setProjectData(prevData => ({ ...prevData, [name]: value }));
-    }
+    const [projectData, setProjectData] = useState({ projectName: '', selectedTemplate: '' });
+    const { templates, isLoadingTemplates } = usePlugins();
+    const { createProject, createProjectLoading } = useProjects();
 
-    const handleExtraElementChange = (e) => {
-        const { name, checked } = e.target;
-        if (checked) {
-            setProjectData(prevData => ({ ...prevData, extraElements: [...prevData.extraElements, name] }));
-        } else {
-            setProjectData(prevData => ({ ...prevData, extraElements: prevData.extraElements.filter(element => element !== name) }));
+    const handleCreate = async () => {
+        const project: any = await createProject({
+            ...templates[projectData.selectedTemplate],
+            typedName: projectData.projectName.trim()
+        })
+
+        if (project && project._id) {
+            router.push(`/project?id=${project._id}`)
         }
     }
 
-    if(isLoadingTemplates) return <div className='p-10 max-w-7xl mx-auto '><div className='flex justify-center items-center h-full w-full'>
-        <span className="loader"></span>
-    </div></div>
+    if (isLoadingTemplates) return null
 
     return (
         <AlertBox className='overflow-auto min-w-[20rem] max-h-[35rem] ease-in-out duration-300' title='Create Project'>
-            <form>
+            {createProjectLoading && <Loader2 size={20} className='animate-spin' />}
+            <div>
                 <label>
                     Project Name:
-                    <input type="text" name="projectName" value={projectData.projectName} onChange={handleProjectDataChange} />
+                    <input type="text" name="projectName" value={projectData.projectName} onChange={(e) => setProjectData(prevData => ({ ...prevData, projectName: e.target.value }))} />
                 </label>
                 <label>
                     Select Template:
-                    <select name="selectedTemplate" value={projectData.selectedTemplate} onChange={handleProjectDataChange}>
+                    <select name="selectedTemplate" value={projectData.selectedTemplate} onChange={(e) => {
+                        setProjectData(prevData => ({ ...prevData, selectedTemplate: e.target.value }));
+                    }}>
                         {templates.map((template, index) => (
-                            <option key={index} value={template.name}>
+                            <option key={index} value={index}>
                                 {template.name}
                             </option>
                         ))}
                     </select>
                 </label>
-                <label>
-                    Extra Elements:
-                    {element.map((template, index) => (
-                        <label key={index}>
-                            <input type="checkbox" name={template.name} checked={projectData.extraElements.includes(template.name)} onChange={handleExtraElementChange} />
-                            {template.name}
-                        </label>
-                    ))}
-                </label>
-            </form>
+                <Button onClick={handleCreate}>Create Project</Button>
+            </div>
         </AlertBox>
     )
 }

@@ -13,23 +13,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function PluginCart({ template, reavlidate, index }) {
+export default function PluginCart({ template, reavlidate }) {
 
     const { deletePlugin, isLoading } = useSoloPlugins(template.base, reavlidate)
 
-    const handleTemplateClick = async () => {
-        try {
-            await (window as any).electron.invoke('create-project', template);
-        } catch (error) {
-            console.error('Error sending template data:', error);
-        }
-    }
 
     return (
-        <div
-            onClick={() => handleTemplateClick()}
-            className='project-card-no-translate'
-            style={{ animationDelay: `${index * 0.2}s` }}>
+        <div>
             <ImageLoader className='object-cover w-full h-44 object-left-top rounded-lg border p-1 bg-muted' url={`asset://${template.directory}/meta/preview/5.png`} />
             <div className='flex items-center justify-between mt-1'>
                 <h1 className='text-base px-3'>{useHelfText(template.name, 35)}</h1>

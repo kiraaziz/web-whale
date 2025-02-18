@@ -1,6 +1,10 @@
 import { Github, Twitch, Twitter } from 'lucide-react'
 
-
+const metaData = {
+    name: "web whale",
+    description: "Make your own website in seconds",
+    version: "delta-0.8"
+}
 const websiteLink = 'https://webwhale.io'
 const visitePages = ["about", "contact", "privacy", "terms"]
 const linkesWithIcons = [
@@ -28,4 +32,4 @@ const auther = {
 
 const pluginExploreLink = '/plugins'
 
-export { websiteLink, visitePages, pluginExploreLink, linkesWithIcons, auther }
+export { websiteLink, visitePages, pluginExploreLink, linkesWithIcons, auther, metaData }

@@ -26,7 +26,7 @@ if (isProd) {
   const mainWindow = createWindow('main', {
     width: 1400,
     height: 800,
-    autoHideMenuBar: true,
+    frame: false, 
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     }
@@ -38,6 +38,7 @@ if (isProd) {
     const port = process.argv[2]
     await mainWindow.loadURL(`http://localhost:${port}`)
   }
+
 
 })()
 
@@ -60,7 +61,7 @@ ipcMain.handle('delete-template', async (event, templateBaseId) => await deleteT
 ipcMain.handle('get-all-projects', async () => await getAllProjects())
 ipcMain.handle('get-project-by-id', async (event, projectId) => await getProjectById(projectId))
 ipcMain.handle('create-project', async (event, template) => await createProject(template))
-ipcMain.handle('update-project', async (event, projectId, newData) => await updateProject(projectId, newData))
+ipcMain.handle('update-project', async (event, data) => await updateProject(data.projectId, data.newData))
 ipcMain.handle('delete-project', async (event, data) => await deleteProject(data))
 
 
