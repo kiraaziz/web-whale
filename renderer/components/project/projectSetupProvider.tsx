@@ -1,26 +1,43 @@
 import React, { useState } from 'react'
 import usePlugins from '../../hooks/usePlugins'
 import AlertBox from './AlertBox'
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useProjects } from '@/hooks/useProjects';
 import { useRouter } from 'next/navigation';
+import { Input } from '../ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { toast } from 'sonner';
 
-export default function projectSetupProvider() {
-
+// Changed to PascalCase for React component naming convention
+export default function ProjectSetupProvider() {
     const router = useRouter()
-
     const [projectData, setProjectData] = useState({ projectName: '', selectedTemplate: '' });
     const { templates, isLoadingTemplates } = usePlugins();
     const { createProject, createProjectLoading } = useProjects();
 
     const handleCreate = async () => {
+        if (!projectData.projectName) {
+            toast.error("please select a name")
+            return
+        }
+
+        if (!projectData.selectedTemplate) {
+            toast.error("please select a template")
+            return
+        }
         const project: any = await createProject({
             ...templates[projectData.selectedTemplate],
             typedName: projectData.projectName.trim()
         })
 
-        if (project && project._id) {
+        if (project?._id) {
             router.push(`/project?id=${project._id}`)
         }
     }
@@ -29,25 +46,56 @@ export default function projectSetupProvider() {
 
     return (
         <AlertBox className='overflow-auto min-w-[20rem] max-h-[35rem] ease-in-out duration-300' title='Create Project'>
-            {createProjectLoading && <Loader2 size={20} className='animate-spin' />}
-            <div>
-                <label>
-                    Project Name:
-                    <input type="text" name="projectName" value={projectData.projectName} onChange={(e) => setProjectData(prevData => ({ ...prevData, projectName: e.target.value }))} />
-                </label>
-                <label>
-                    Select Template:
-                    <select name="selectedTemplate" value={projectData.selectedTemplate} onChange={(e) => {
-                        setProjectData(prevData => ({ ...prevData, selectedTemplate: e.target.value }));
-                    }}>
-                        {templates.map((template, index) => (
-                            <option key={index} value={index}>
-                                {template.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-                <Button onClick={handleCreate}>Create Project</Button>
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <Input
+                        autoFocus
+                        placeholder='Project name'
+                        type="text"
+                        value={projectData.projectName}
+                        onChange={(e) => setProjectData(prev => ({
+                            ...prev,
+                            projectName: e.target.value
+                        }))}
+                    />
+
+                    <Select
+                        value={projectData.selectedTemplate}
+                        onValueChange={(value) => {
+                            setProjectData(prev => ({
+                                ...prev,
+                                selectedTemplate: value
+                            }));
+                        }} >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {templates.map((template, index) => (
+                                <SelectItem
+                                    className='hover:cursor-pointer hover:bg-muted'
+                                    key={index}
+                                    value={index.toString()} >
+                                    {template.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <Button
+                    onClick={handleCreate}
+                    className="w-full"
+                    disabled={createProjectLoading || !projectData.projectName || !projectData.selectedTemplate}>
+                    {createProjectLoading ?
+                        <div className='h-5 w-5'>
+                            <Loader2 size={20} className='animate-spin' />
+                        </div>
+                        : <>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Project
+                        </>
+                    }
+                </Button>
             </div>
         </AlertBox>
     )
