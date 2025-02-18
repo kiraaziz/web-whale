@@ -62,6 +62,28 @@ async function updateProject(projectId, newData) {
     }
 }
 
+async function updateProjectContent(projectDir, newData) {
+    try {
+        const projectStatePath = path.join(projectDir, 'projectState.json')
+        await fs.promises.writeFile(projectStatePath, JSON.stringify(newData))
+        return {
+            sucess: true
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+async function getProjectContent(projectDir) {
+    try {
+        const projectStatePath = path.join(projectDir, 'projectState.json')
+        const data = await fs.promises.readFile(projectStatePath, 'utf-8')
+        return JSON.parse(data)
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function deleteProject(projectData) {
     try { 
         await (await projectsDb()).remove({ _id: projectData._id }, {})
@@ -74,4 +96,4 @@ async function deleteProject(projectData) {
     }
 }
 
-export { getAllProjects, getProjectById, createProject, updateProject, deleteProject }
+export { getAllProjects, getProjectById, createProject, updateProject, deleteProject, updateProjectContent,getProjectContent }

@@ -4,7 +4,7 @@ import { app, ipcMain, protocol, shell } from 'electron'
 import { createWindow } from './helpers'
 import { readPluginFile } from './utils/readPluginFile'
 import { deleteTemplate, getAllTemplates, openWhaleFileDialog, savePlugin } from './functions/usePlugins'
-import { getAllProjects, getProjectById, createProject, updateProject, deleteProject } from './functions/useProject'
+import { getAllProjects, getProjectById, createProject, updateProject, deleteProject, updateProjectContent, getProjectContent } from './functions/useProject'
 import { useRedirectToBrowser } from './utils/useRedirectToBrowser'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -62,6 +62,8 @@ ipcMain.handle('get-all-projects', async () => await getAllProjects())
 ipcMain.handle('get-project-by-id', async (event, projectId) => await getProjectById(projectId))
 ipcMain.handle('create-project', async (event, template) => await createProject(template))
 ipcMain.handle('update-project', async (event, data) => await updateProject(data.projectId, data.newData))
+ipcMain.handle('update-project-content', async (event, data) => await updateProjectContent(data.projectDir, data.newData))
+ipcMain.handle('get-project-content', async (event, data) => await getProjectContent(data))
 ipcMain.handle('delete-project', async (event, data) => await deleteProject(data))
 
 

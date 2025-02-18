@@ -4,7 +4,7 @@ import { DevicesProvider, useEditor } from '@grapesjs/react'
 import { Eye, Layout, Laptop, Monitor, Smartphone, Tablet, Download, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import React, { useState } from 'react'
 
-export default function Screens({ isPreview, setIsPreview, showEditors, setShowEditors, saveAll }: any) {
+export default function Screens({ isPreview, setIsPreview, showEditors, setShowEditors, saveAll, SaveButton }: any) {
     const editor = useEditor()
     const [isOutlineActive, setIsOutlineActive] = useState(false)
 
@@ -35,7 +35,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
 
 
     return (
-        <div className='flex items-center justify-center gap-2 flex-1'>
+        <div className='flex items-center justify-center gap-2 flex-1 pr-5'>
             <div className="flex items-center gap-1  px-5">
                 <Button
                     size="icon"
@@ -71,7 +71,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                     </div>
                 )}
             </DevicesProvider>
-            <div className="flex items-center gap-1 px-5">
+            <div className="flex items-center gap-1 pl-5 pr-2">
                 <Button
                     size="icon"
                     variant={isOutlineActive ? "default" : "outline"}
@@ -101,6 +101,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                     <Download size={20} />
                 </Button>
             </div>
+            {SaveButton}
         </div>
     )
 }

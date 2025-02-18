@@ -12,11 +12,15 @@ import { PageManager } from './Elements/PagesManger'
 import Timers from './Tools/Timers'
 import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import { useHelfText } from '@/hooks/useState'
+import gjsBlocksBasic from 'grapesjs-blocks-basic'
+import { debounce } from 'lodash'
+import 'grapesjs/dist/css/grapes.min.css'
+import { toast } from 'sonner'
+import { Button } from '../ui/button'
+import { CheckCheck, SaveAll } from 'lucide-react'
 
-export default function EditorLayout({ values, template, project }: any) {
+export default function EditorLayout({ template, project, projectState }: any) {
 
   const [selectedElement, setSelectedElement] = useState("components")
   const [editor, setEditor] = useState<Editor>()
@@ -24,6 +28,7 @@ export default function EditorLayout({ values, template, project }: any) {
   const [isPreview, setIsPreview] = useState(false)
   const [showEditors, setShowEditors] = useState(true)
   const [showSpaces, setShowSpaces] = useState(true)
+  const [isLastUpdate, setIsLastUpdate] = useState(true)
 
   const onEditor = (editor_: Editor) => {
     if (editor_) {
@@ -31,7 +36,7 @@ export default function EditorLayout({ values, template, project }: any) {
     }
   }
 
-  editor && editor.on('component:remove', (component) => {
+  editor && editor.on('component:remove', () => {
     setSelectedElement("components")
     const wrapper = editor.getWrapper()
     editor.select(wrapper)
@@ -44,46 +49,89 @@ export default function EditorLayout({ values, template, project }: any) {
     }
   })
 
+  editor && editor.on('block:drag:start', () => {
+    const guideId = 'drag-guide-component';
+    const existingGuide = editor.getWrapper().find(`#${guideId}`)[0];
+
+    if (!existingGuide) {
+      editor.addComponents(`
+        <div id="${guideId}" class="custom-container " style="
+        height: 50px;
+          width: 100%
+        ">
+        </div>
+      `);
+    }
+  });
+
+  editor && editor.on('block:drag:stop', () => {
+    const guideId = 'drag-guide-component';
+    const guide = editor.getWrapper().find(`#${guideId}`)[0];
+    if (guide) {
+      guide.remove();
+    }
+  });
+
+  editor && editor.on('destroy', () => {
+    const guideId = 'drag-guide-component';
+    const guide = editor.getWrapper().find(`#${guideId}`)[0];
+    if (guide) {
+      guide.remove();
+    }
+  });
+
   editor && editor.on('stop:core:preview', () => {
     setIsPreview(false)
   })
 
-  editor && editor.on('update', (component) => {
-    console.log('Project state updated:', editor.getComponents());
+  const saveState = async () => {
+    try {
+      await (window as any).electron.invoke('update-project-content', {
+        projectDir: project.projectDirectory,
+        newData: editor.getProjectData()
+      })
+    } catch (e) {
+      toast.error("error saving project")
+    }
+
+    setIsLastUpdate(true)
+  }
+
+  editor && editor.on('component:update component:add component:remove', () => {
+    setIsLastUpdate(false)
   })
 
   useEffect(() => {
     if (editor) {
       const wrapper = editor.getWrapper()
       editor.select(wrapper)
+      editor.loadProjectData(projectState);
       setInit(false)
     }
   }, [editor])
-
-
-
-  const addComplexHtml = () => { }
-
 
   return (
     <GjsEditor
       grapesjs={grapesjs}
       onEditor={onEditor}
-      plugins={[...plugins, (editor: Editor) => template(editor)]}
-      grapesjsCss="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
+      plugins={[gjsBlocksBasic, (editor: Editor) => template(editor)]}
       options={{
         height: '100vh',
         storageManager: false,
         canvas: {
           scripts: project.structure.js.map((v: any) => { return `asset://${project.projectDirectory}/js/${v}` }),
-          styles: project.structure.css.map((v: any) => { return `asset://${project.projectDirectory}/css/${v}` })
+          styles: project.structure.css.map((v: any) => { return `asset://${project.projectDirectory}/css/${v}` }),
         },
       }}>
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
           {editor && <Timers projectName={useHelfText(project.typedName || "Untitled", 10)} />}
-          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={addComplexHtml} />}
-
+          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={null} SaveButton={<Button onClick={saveState} disabled={isLastUpdate}>
+            {isLastUpdate ? 
+            <CheckCheck size={15} />
+            : 
+            <SaveAll size={15} />}
+            Save</Button>} />}
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
           {true && <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />}
@@ -121,25 +169,6 @@ export default function EditorLayout({ values, template, project }: any) {
     </GjsEditor>
   )
 }
-
-declare global {
-  interface Window {
-    HeadingPlugin: (editor: Editor) => void
-  }
-}
-
-const plugins = [
-  // {
-  //   id: 'gjs-blocks-basic',
-  //   src: 'https://unpkg.com/grapesjs-blocks-basic',
-  // },
-  // {
-  //   id: 'grapesjs-tailwind',
-  //   src: 'https://unpkg.com/grapesjs-tailwind',
-  // },
-]
-
-
 
 
 
