@@ -5,18 +5,50 @@ import { Check, Pen, PenBox, Plus, Trash, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
+import slugify from "slugify"
 
-export function PageManager({ pages, selected, add, select, remove, setSelectedElement }: PagesResultProps & {
-    setSelectedElement: (element: any) => void
+export function PageManager({ pages, selected, add, select, remove, setSelectedElement, pageDetails, setPageDetails }: PagesResultProps & {
+    setSelectedElement: (element: any) => void,
+    pageDetails, setPageDetails
 }) {
 
     const addNewPage = () => {
         const nextIndex = pages.length + 1
         add({
-            name: `New page ${nextIndex}`,
-            component: `<h1>Page content ${nextIndex}</h1>`,
+            name: `New page`,
+            component: `<h1>Page content</h1>`,
         })
     }
+
+    useEffect(() => {
+
+        const slugCounts = new Map<string, number>()
+        const uniquePageDetails = pages.map((v) => {
+            let baseName = v.getName()
+            let baseSlug = slugify(baseName, {
+                replacement: '-',
+                lower: true,
+                trim: true
+            }) || "index"
+
+            let finalSlug = baseSlug + ".html"
+            let counter = 1
+
+            while (slugCounts.has(finalSlug)) {
+                finalSlug = `${baseSlug}-${counter}.html`
+                counter++
+            }
+
+            slugCounts.set(finalSlug, 1)
+
+            return {
+                name: baseName,
+                slug: finalSlug
+            }
+        })
+
+        setPageDetails(uniquePageDetails)
+    }, [pages])
 
     return (
         <div className="gjs-custom-page-manager p-4">
@@ -26,15 +58,15 @@ export function PageManager({ pages, selected, add, select, remove, setSelectedE
                     <Plus size={20} />
                     New page
                 </Button>
-            </div> 
+            </div>
             {pages.map((page, index) => (
-                <CustomInput setSelectedElement={setSelectedElement} page={page} selected={selected} select={select} remove={remove} />
+                <CustomInput slug={pageDetails[index] && pageDetails[index].slug} setSelectedElement={setSelectedElement} page={page} selected={selected} select={select} remove={remove} />
             ))}
         </div>
     )
 }
 
-const CustomInput = ({ page, selected, select, remove, setSelectedElement }: any) => {
+const CustomInput = ({ page, selected, select, remove, setSelectedElement, slug }: any) => {
 
     const [isEdit, setEdit] = useState(false)
     const [text, setText] = useState(page.getName() || 'Untitled page')
@@ -66,6 +98,7 @@ const CustomInput = ({ page, selected, select, remove, setSelectedElement }: any
                         onClick={() => select(page)}
                     >
                         {page.getName() || 'Untitled page'}
+                        <p className='text-xs text-foreground/50 font-extralight'>/{slug}</p>
                     </button>}
                 <button type="submit" className='ease-in-out duration-200 hover:text-primary hover:bg-primary/10 ml-2' onClick={() => handleUpdateName()}>
                     {isEdit ?

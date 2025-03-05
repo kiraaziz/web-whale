@@ -10,4 +10,13 @@ async function readPluginFile(filePath) {
     }
 }
 
-export { readPluginFile  }
+async function readPluginFileExact(filePath) {
+    try {
+        const content = await fsPromises.readFile(filePath)
+        return content
+    } catch (error) {
+        throw error
+    }
+}
+
+export { readPluginFile, readPluginFileExact }

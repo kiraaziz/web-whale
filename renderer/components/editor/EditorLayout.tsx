@@ -14,11 +14,16 @@ import Screens from './Tools/Screens'
 import { cn } from '@/lib/utils'
 import { useHelfText } from '@/hooks/useState'
 import gjsBlocksBasic from 'grapesjs-blocks-basic'
-import { debounce } from 'lodash'
 import 'grapesjs/dist/css/grapes.min.css'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
 import { CheckCheck, SaveAll } from 'lucide-react'
+
+
+// import path from 'path';
+// import fs from 'fs-extra';
+import JSZip from 'jszip';
+import path from 'path'
 
 export default function EditorLayout({ template, project, projectState }: any) {
 
@@ -29,6 +34,7 @@ export default function EditorLayout({ template, project, projectState }: any) {
   const [showEditors, setShowEditors] = useState(true)
   const [showSpaces, setShowSpaces] = useState(true)
   const [isLastUpdate, setIsLastUpdate] = useState(true)
+  const [pageDetails, setPageDetails] = useState([])
 
   const onEditor = (editor_: Editor) => {
     if (editor_) {
@@ -101,6 +107,101 @@ export default function EditorLayout({ template, project, projectState }: any) {
     setIsLastUpdate(false)
   })
 
+  const handleExportSite = async () => {
+    try {
+      // Create a new ZIP instance
+      const zip = new JSZip();
+
+      // Get all pages from the editor
+      const pages = editor.Pages.getAll();
+
+      // Create directories in the ZIP
+      const jsFolder = zip.folder('js');
+      const cssFolder = zip.folder('css');
+      const imgFolder = zip.folder('img');
+      const fontsFolder = zip.folder('fonts');
+
+      // Copy JS files from project directory to ZIP
+      const jsFiles = project.structure.js;
+      for (const jsFile of jsFiles) {
+        const jsPath = path.join(project.projectDirectory, 'js', jsFile);
+        const jsContent = await (window as any).electron.invoke('read-plugin-file', jsPath)
+        jsFolder.file(jsFile, jsContent);
+      }
+
+      
+      // Copy JS files from project directory to ZIP
+      const fontsFiles = project.structure.fonts;
+      for (const fontsFile of fontsFiles) {
+        const fontsPath = path.join(project.projectDirectory, 'fonts', fontsFile);
+        const fontsContent = await (window as any).electron.invoke('read-plugin-file-exact', fontsPath)
+        fontsFolder.file(fontsFile, fontsContent);
+      }
+
+      // Copy CSS files from project directory to ZIP
+      const cssFiles = project.structure.css;
+      for (const cssFile of cssFiles) {
+        const cssPath = path.join(project.projectDirectory, 'css', cssFile);
+        const cssContent = await (window as any).electron.invoke('read-plugin-file', cssPath)
+        cssFolder.file(cssFile, cssContent);
+      }
+
+      // Export each page
+      // Generate script and style links
+      const jsLinks = jsFiles.map(jsFile => `<script src="./js/${jsFile}"></script>`).join("\n");
+      const cssLinks = cssFiles.map(cssFile => `<link rel="stylesheet" href="./css/${cssFile}">`).join("\n");
+
+      // Export each page
+      for (const [index, page] of (pages as any).entries()) {
+        let pageContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${pageDetails[index].name}</title>
+            ${cssLinks}
+        </head>
+        <body>
+            ${page.getMainComponent().toHTML().replaceAll("https://mobiri.se", "/#").replaceAll(`asset://${project.projectDirectory.replaceAll(/\\/g, '/')}/img`, './img')}
+            ${jsLinks}
+        </body>
+        </html>
+        `;
+        const pageSlug = pageDetails[index].slug;
+
+        // Add page to ZIP
+        zip.file(pageSlug, pageContent);
+      }
+
+      // // Copy image files
+      const imgFiles = project.structure.img;
+      for (const imgFile of imgFiles) {
+        const imgPath = path.join(project.projectDirectory, 'img', imgFile);
+        const imgContent = await (window as any).electron.invoke('read-plugin-file-exact', imgPath)
+        imgFolder.file(imgFile, imgContent);
+      }
+
+
+      // // Generate the ZIP file
+      const zipContent = await zip.generateAsync({ type: 'blob' });
+
+      // Create download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(zipContent);
+      downloadLink.download = `${project.typedName || 'project'}.zip`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      toast.success('Project exported successfully');
+
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error(`Export failed: ${error.message}`);
+    }
+  }
+
   useEffect(() => {
     if (editor) {
       const wrapper = editor.getWrapper()
@@ -126,11 +227,11 @@ export default function EditorLayout({ template, project, projectState }: any) {
       <div className={`flex w-full flex-col h-[100svh]`}>
         <div className='w-full h-[4rem] border-b bg-muted/20  flex items-center'>
           {editor && <Timers projectName={useHelfText(project.typedName || "Untitled", 10)} />}
-          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={null} SaveButton={<Button onClick={saveState} disabled={isLastUpdate}>
-            {isLastUpdate ? 
-            <CheckCheck size={15} />
-            : 
-            <SaveAll size={15} />}
+          {editor && <Screens showEditors={showEditors} setShowEditors={setShowEditors} isPreview={isPreview} setIsPreview={setIsPreview} saveAll={handleExportSite} SaveButton={<Button onClick={saveState} disabled={isLastUpdate}>
+            {isLastUpdate ?
+              <CheckCheck size={15} />
+              :
+              <SaveAll size={15} />}
             Save</Button>} />}
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
@@ -147,8 +248,9 @@ export default function EditorLayout({ template, project, projectState }: any) {
                 {props => <BlockManager {...props} project={project} setSelectedElement={setSelectedElement} setIsPreview={setShowSpaces} />}
               </BlocksProvider>}
               {(selectedElement === "pages") && <PagesProvider>
-                {props => <PageManager {...props} setSelectedElement={setSelectedElement} />}
+                {props => <PageManager {...props} setSelectedElement={setSelectedElement} pageDetails={pageDetails} setPageDetails={setPageDetails} />}
               </PagesProvider>}
+              { }
               <div className={`${(selectedElement === "style") ? "block" : "hidden"}`}>
                 <SelectorsProvider>
                   {props => <SelectorManager {...props} />}
@@ -169,100 +271,3 @@ export default function EditorLayout({ template, project, projectState }: any) {
     </GjsEditor>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-async function saveAll() { }
-//   const zip = new JSZip();
-
-//   // Get HTML content
-//   const html = editor && editor.getHtml();
-//   const css = editor && editor.getCss();
-
-//   // Asset folders to copy
-//   const assetFolders = ['js', 'fonts', 'css', 'img'];
-//   const basePath = `/templates/${templaeID}`;
-
-//   // Function to read file content
-//   async function readFileContent(path: any) {
-//     try {
-//       const response = await fetch(path);
-//       const blob = await response.blob();
-//       return blob;
-//     } catch (error) {
-//       console.error(`Error reading file ${path}:`, error);
-//       return null;
-//     }
-//   }
-
-//   let cssFiles = ""
-//   let jsFiles = ""
-
-//   // Copy assets
-//   for (const folder of assetFolders) {
-//     try {
-//       // Get list of files in each folder
-//       const folderPath = `${basePath}/${folder}/`;
-//       const fileList = values.structure[folder] // You need to implement this based on your backend
-
-//       console.log(fileList)
-
-//       for (const file of fileList) {
-//         const content = await readFileContent(`${folderPath}${file}`);
-//         if (content) {
-//           // Maintain the same directory structure in zip
-//           const filesBase = `templates/${templaeID}/${folder}/${file}`
-//           zip.file(filesBase, content);
-//           if (folder === "css") {
-//             cssFiles += `<link rel="stylesheet" href="${filesBase}"/>\n`
-//           }
-
-//           if (folder === "js") {
-//             jsFiles += `<script src="${filesBase}"></script>\n`
-//           }
-//         }
-//       }
-//     } catch (error) {
-//       console.error(`Error processing ${folder} folder:`, error);
-//     }
-//   }
-
-//   // Create complete HTML file with CSS
-//   const completeHtml = `
-//       <!DOCTYPE html>
-//       <html>
-//         <head>
-//           <meta charset="utf-8">
-//           <title>Exported Template</title>
-//           ${jsFiles}
-//           ${cssFiles}
-//           <style>
-//             ${css}
-//           </style>
-//         </head>
-//         <body>
-//           ${html}
-//         </body>
-//       </html>
-//     `;
-
-//   // Add HTML to zip
-//   zip.file('index.html', completeHtml);
-//   // Generate and download zip
-//   try {
-//     const content = await zip.generateAsync({ type: 'blob' });
-//     saveAs(content, 'template-with-assets.zip');
-//   } catch (error) {
-//     console.error('Error generating zip:', error);
-//   }
-// }

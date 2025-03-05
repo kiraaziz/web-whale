@@ -2,7 +2,7 @@ import path from 'path'
 import serve from 'electron-serve'
 import { app, ipcMain, protocol, shell } from 'electron'
 import { createWindow } from './helpers'
-import { readPluginFile } from './utils/readPluginFile'
+import { readPluginFile, readPluginFileExact } from './utils/readPluginFile'
 import { deleteTemplate, getAllTemplates, openWhaleFileDialog, savePlugin } from './functions/usePlugins'
 import { getAllProjects, getProjectById, createProject, updateProject, deleteProject, updateProjectContent, getProjectContent } from './functions/useProject'
 import { useRedirectToBrowser } from './utils/useRedirectToBrowser'
@@ -32,6 +32,8 @@ if (isProd) {
     }
   })
 
+  mainWindow.webContents.openDevTools();
+
   if (isProd) {
     await mainWindow.loadURL('app://.')
   } else {
@@ -52,6 +54,7 @@ ipcMain.handle('open-external-url', async (event, url) => await useRedirectToBro
 
 // Read file for css and js files
 ipcMain.handle('read-plugin-file', async (event, filePath) => await readPluginFile(filePath))
+ipcMain.handle('read-plugin-file-exact', async (event, filePath) => await readPluginFileExact(filePath))
 
 // Templates
 ipcMain.handle('get-all-templates', async (event) => await getAllTemplates())
