@@ -13,11 +13,6 @@ type CustomBlockManagerProps = Pick<
 
 export function BlockManager({ mapCategoryBlocks, dragStart, dragStop, setIsPreview, project }: CustomBlockManagerProps) {
 
-    function getImageSrc(htmlString: any) {
-        const match = htmlString.match(/<img[^>]*src="([^"]+)"/);
-        return match ? match[1] : null;
-    }
-
     return (
         <div className="gjs-custom-block-manager text-left">
             {Array.from(mapCategoryBlocks).map(([category, blocks]) => (

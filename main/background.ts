@@ -1,11 +1,23 @@
 import path from 'path'
 import serve from 'electron-serve'
-import { app, ipcMain, protocol, shell } from 'electron'
-import { createWindow } from './helpers'
-import { readPluginFile, readPluginFileExact } from './utils/readPluginFile'
-import { deleteTemplate, getAllTemplates, openWhaleFileDialog, savePlugin } from './functions/usePlugins'
-import { getAllProjects, getProjectById, createProject, updateProject, deleteProject, updateProjectContent, getProjectContent } from './functions/useProject'
+import { app, ipcMain, protocol } from 'electron'
+import { readFile, readFileExact } from './utils/readFile'
 import { useRedirectToBrowser } from './utils/useRedirectToBrowser'
+import { createWindow } from './utils/createWindow'
+import {
+  openWhaleFileDialog,
+  saveTemplate,
+  getAllTemplates,
+  deleteTemplate,
+  getAllProjects,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
+  updateProjectContent,
+  getProjectContent
+} from './functions/index'
+
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -26,13 +38,14 @@ if (isProd) {
   const mainWindow = createWindow('main', {
     width: 1400,
     height: 800,
-    frame: false, 
+    frame: false,
+    alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     }
   })
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   if (isProd) {
     await mainWindow.loadURL('app://.')
@@ -46,15 +59,14 @@ if (isProd) {
 
 app.on('window-all-closed', () => app.quit())
 
+// Read files
+ipcMain.handle('read-file', async (event, filePath) => await readFile(filePath))
+ipcMain.handle('read-file-exact', async (event, filePath) => await readFileExact(filePath))
+
 // Utils and file operations
-ipcMain.handle('upload-plugin', async (event) => await openWhaleFileDialog())
-ipcMain.handle('save-plugin', async (event, sourcePath) => await savePlugin(sourcePath))
+ipcMain.handle('upload-template', async (event) => await openWhaleFileDialog())
+ipcMain.handle('save-template', async (event, sourcePath) => await saveTemplate(sourcePath))
 ipcMain.handle('open-external-url', async (event, url) => await useRedirectToBrowser(url))
-
-
-// Read file for css and js files
-ipcMain.handle('read-plugin-file', async (event, filePath) => await readPluginFile(filePath))
-ipcMain.handle('read-plugin-file-exact', async (event, filePath) => await readPluginFileExact(filePath))
 
 // Templates
 ipcMain.handle('get-all-templates', async (event) => await getAllTemplates())

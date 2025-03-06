@@ -125,16 +125,16 @@ export default function EditorLayout({ template, project, projectState }: any) {
       const jsFiles = project.structure.js;
       for (const jsFile of jsFiles) {
         const jsPath = path.join(project.projectDirectory, 'js', jsFile);
-        const jsContent = await (window as any).electron.invoke('read-plugin-file', jsPath)
+        const jsContent = await (window as any).electron.invoke('read-file', jsPath)
         jsFolder.file(jsFile, jsContent);
       }
 
-      
+
       // Copy JS files from project directory to ZIP
       const fontsFiles = project.structure.fonts;
       for (const fontsFile of fontsFiles) {
         const fontsPath = path.join(project.projectDirectory, 'fonts', fontsFile);
-        const fontsContent = await (window as any).electron.invoke('read-plugin-file-exact', fontsPath)
+        const fontsContent = await (window as any).electron.invoke('read-file-exact', fontsPath)
         fontsFolder.file(fontsFile, fontsContent);
       }
 
@@ -142,7 +142,7 @@ export default function EditorLayout({ template, project, projectState }: any) {
       const cssFiles = project.structure.css;
       for (const cssFile of cssFiles) {
         const cssPath = path.join(project.projectDirectory, 'css', cssFile);
-        const cssContent = await (window as any).electron.invoke('read-plugin-file', cssPath)
+        const cssContent = await (window as any).electron.invoke('read-file', cssPath)
         cssFolder.file(cssFile, cssContent);
       }
 
@@ -178,7 +178,7 @@ export default function EditorLayout({ template, project, projectState }: any) {
       const imgFiles = project.structure.img;
       for (const imgFile of imgFiles) {
         const imgPath = path.join(project.projectDirectory, 'img', imgFile);
-        const imgContent = await (window as any).electron.invoke('read-plugin-file-exact', imgPath)
+        const imgContent = await (window as any).electron.invoke('read-file-exact', imgPath)
         imgFolder.file(imgFile, imgContent);
       }
 
@@ -235,7 +235,7 @@ export default function EditorLayout({ template, project, projectState }: any) {
             Save</Button>} />}
         </div>
         <div className='w-full flex !h-[calc(100svh_-_4rem)] '>
-          {true && <ElementSelector selectedElement={selectedElement} setSelectedElement={setSelectedElement} />}
+          <ElementSelector setShowEditors={setShowEditors} selectedElement={selectedElement} setSelectedElement={setSelectedElement} />
           <div className={`h-full border-r bg-muted/20  magicScroll ease-in-out duration-300 overflow-x-hidden ${!showEditors ? "w-0 opacity-0 " : "opacity-100 w-[20em]"}`}>
             <div className='!w-[20em] pointer-events-none'>
               {(selectedElement === "layers") && <LayersProvider>

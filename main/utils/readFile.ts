@@ -1,6 +1,7 @@
 import fsPromises from 'fs/promises'
 
-async function readPluginFile(filePath) {
+//return content of file as string
+async function readFile(filePath) {
     try {
         const content = await fsPromises.readFile(filePath, 'utf-8')
         const modifiedScriptText = content
@@ -10,7 +11,8 @@ async function readPluginFile(filePath) {
     }
 }
 
-async function readPluginFileExact(filePath) {
+//return same content as readFile, but without encoding
+async function readFileExact(filePath) {
     try {
         const content = await fsPromises.readFile(filePath)
         return content
@@ -19,4 +21,4 @@ async function readPluginFileExact(filePath) {
     }
 }
 
-export { readPluginFile, readPluginFileExact }
+export { readFile, readFileExact }

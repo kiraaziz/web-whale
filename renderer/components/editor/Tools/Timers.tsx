@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { useHelfText } from '@/hooks/useState'
 import { useEditor } from '@grapesjs/react'
 import { FlameKindling, Redo, Undo } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 interface TimersProps {
@@ -28,18 +29,21 @@ export default function Timers({ projectName }: TimersProps) {
         }
     }
 
-    editor.on('update', () => {
-        console.log(editor.UndoManager.hasUndo())
-    })
-
     return (
         <>
             <div className='flex items-center justify-center border-r h-full w-14'>
-                <Logo />
+                <Link href='/' className='flex items-center justify-center relative'>
+                    <div className='h-10 absolute flex items-center justify-center overflow-hidden' >
+                        <Logo />
+                    </div>
+                    <div className='blur opacity-70 h-10 absolute flex items-center justify-center overflow-hidden' >
+                        <Logo />
+                    </div>
+                </Link>
             </div>
             <div className='flex items-center justify-start px-4 gap-4 border-r h-full w-[20em]'>
                 <div className='flex-1 text-foreground/60'>
-                    {projectName} / <span className='text-foreground font-semibold'>
+                    {useHelfText(projectName, 20)} / <span className='text-foreground font-semibold'>
                         {useHelfText(editor.selected?.getName?.() || editor.selected?.getLabel() || 'Untitled page', 15)}
                     </span>
                 </div>

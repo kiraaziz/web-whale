@@ -1,13 +1,12 @@
 import path from 'path'
 import fs from 'fs/promises'
-import fsPure from 'fs'
 import AdmZip from 'adm-zip'
-import { app, dialog } from 'electron'
-import { SetupSchema } from '../utils/SetupSchema'
-import { templatesDb } from '../utils/databaseSetup'
+import { app } from 'electron'
+import { SetupSchema } from '../../utils/SetupSchema'
+import { templatesDb } from '../../utils/databaseSetup'
 import { useOptimise } from './useOptimise'
 
-async function savePlugin(sourcePath: string) {
+async function saveTemplate(sourcePath: string) {
     try {
         const zip = new AdmZip(sourcePath)
         const setupJsonEntry = zip.getEntry('setup.json')
@@ -29,7 +28,7 @@ async function savePlugin(sourcePath: string) {
         const templatesDir = path.join(app.getPath('userData'), 'templates', baseId)
         await fs.mkdir(templatesDir, { recursive: true })
 
-        zip.extractAllTo(templatesDir, true) 
+        zip.extractAllTo(templatesDir, true)
 
         const setupJsonPath = path.join(templatesDir, 'setup.json')
         await fs.writeFile(setupJsonPath, setupJson)
@@ -58,36 +57,5 @@ async function savePlugin(sourcePath: string) {
     }
 }
 
-async function openWhaleFileDialog() {
-    try {
-        return await dialog.showOpenDialog({
-            properties: ['openFile'],
-            filters: [{ name: 'Whale Files', extensions: ['whale'] }]
-        });
-    } catch (error) {
-        throw error;
-    }
-}
 
-async function getAllTemplates() {
-    try {
-        return await (await templatesDb()).find({})
-    } catch (error) {
-        throw error
-    }
-}
-
-async function deleteTemplate(templateBaseId) {
-    try { 
-
-        await (await templatesDb()).remove({ base: templateBaseId }, {})
-
-        const templateDir = path.join(app.getPath('userData'), 'templates', path.basename(templateBaseId))
-        await fsPure.promises.rmdir(templateDir, { recursive: true })
-        return { success: true }
-    } catch (error) {
-        throw error
-    }
-}
-
-export { savePlugin, openWhaleFileDialog, getAllTemplates, deleteTemplate }
+export { saveTemplate }

@@ -63,13 +63,13 @@ const usePlugins = create<PluginStore>((set, get) => ({
         try {
             set({ isUploading: true, uploadError: null })
             
-            const result: FileResult = await (window as any).electron.invoke('upload-plugin', {
+            const result: FileResult = await (window as any).electron.invoke('upload-template', {
                 filters: [{ name: 'Whale Files', extensions: ['whale'] }]
             })
             
             if (!result.canceled) {
                 const filePath = result.filePaths[0]
-                const res: ProcessResult = await (window as any).electron.invoke('save-plugin', filePath)
+                const res: ProcessResult = await (window as any).electron.invoke('save-template', filePath)
                 await get().fetchTemplates()
                 return res
             }
