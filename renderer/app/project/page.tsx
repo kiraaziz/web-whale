@@ -35,7 +35,7 @@ export default function page() {
   const handleLoadAssests = async (e: any) => {
     try {
       const pluginPath = `${e.projectDirectory}/${e.structure.root[0]}`
-      const scriptText = await (window as any).electron.invoke('read-plugin-file', pluginPath)
+      const scriptText = await (window as any).electron.invoke('read-file', pluginPath)
       const state = await (window as any).electron.invoke('get-project-content', e.projectDirectory)
 
       const moduleFunction = new Function(
