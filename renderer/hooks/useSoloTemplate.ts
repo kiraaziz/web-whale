@@ -2,29 +2,29 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-const useSoloPlugins = (baseId, reavlidate) => {
+const useSoloTemplates = (baseId, reavlidate) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const deletePlugin = async () => {
+    const deleteTemplate = async () => {
         setIsLoading(true);
         setError(null);
         try {
             await (window as any).electron.invoke('delete-template', baseId);
             await reavlidate()
         } catch (err) {
-            setError(`Error deleting plugin: ${err.message}`);
-            toast.error(`Error deleting plugin: ${err.message}`);
+            setError(`Error deleting Template: ${err.message}`);
+            toast.error(`Error deleting Template: ${err.message}`);
         } finally {
             setIsLoading(false);
         }
     };
 
     return {
-        deletePlugin,
+        deleteTemplate,
         isLoading,
         error,
     };
 }
 
-export default useSoloPlugins
+export default useSoloTemplates

@@ -1,10 +1,10 @@
 "use client"
+import "@/lib/style/globals.css"
 import TitleBar from "@/components/providers/TitleBar"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/providers/theme"
 import { Toaster } from "@/components/ui/sonner"
-import "@/lib/globals.css"
 
 export default function RootLayout({ children }: any) {
 
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: any) {
     <html lang="en">
       <head>
         <title>Web Whale</title>
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="icon" href="/svg/logo.svg" type="image/svg+xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={cn("text-foreground w-screen bg-background p-0 m-0 flex flex-col overflow-hidden !pb-0")

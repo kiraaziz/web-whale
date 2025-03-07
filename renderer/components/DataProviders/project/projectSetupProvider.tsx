@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import usePlugins from '../../hooks/usePlugins'
+import useTemplates from '../../../hooks/useTemplates'
 import AlertBox from './AlertBox'
 import { Loader2, Plus } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { useProjects } from '@/hooks/useProjects';
 import { useRouter } from 'next/navigation';
-import { Input } from '../ui/input';
+import { Input } from '../../ui/input';
 import {
     Select,
     SelectContent,
@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 export default function ProjectSetupProvider() {
     const router = useRouter()
     const [projectData, setProjectData] = useState({ projectName: '', selectedTemplate: '' });
-    const { templates, isLoadingTemplates } = usePlugins();
+    const { templates, isLoadingTemplates } = useTemplates();
     const { createProject, createProjectLoading } = useProjects();
 
     const handleCreate = async () => {

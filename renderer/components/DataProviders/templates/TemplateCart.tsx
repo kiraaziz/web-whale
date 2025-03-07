@@ -1,8 +1,8 @@
-import useSoloPlugins from '@/hooks/useSoloPlugins'
+import useSoloTemplate from '@/hooks/useSoloTemplate'
 import React from 'react'
 import ImageLoader from './ImageLoader'
 import { useHelfText } from '@/hooks/useState'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 import { Loader2, MoreVertical, Trash2 } from 'lucide-react'
 import {
     DropdownMenu,
@@ -13,9 +13,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function PluginCart({ template, reavlidate }) {
+export default function TemplateCart({ template, reavlidate }) {
 
-    const { deletePlugin, isLoading } = useSoloPlugins(template.base, reavlidate)
+    const { deleteTemplate, isLoading } = useSoloTemplate(template.base, reavlidate)
 
 
     return (
@@ -32,7 +32,7 @@ export default function PluginCart({ template, reavlidate }) {
                     <DropdownMenuContent className='min-w-40'>
                         <DropdownMenuLabel className='capitalize text-sm text-foreground/60'>{template.name}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={deletePlugin} className='flex items-center gap-2 text-destructive hover:bg-destructive/20 hover:cursor-pointer'>
+                        <DropdownMenuItem onClick={deleteTemplate} className='flex items-center gap-2 text-destructive hover:bg-destructive/20 hover:cursor-pointer'>
                             <Trash2 size={16} className='text-destructive' />
                             Delete
                         </DropdownMenuItem>

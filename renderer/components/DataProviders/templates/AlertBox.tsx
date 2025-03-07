@@ -6,9 +6,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { ArrowUpRight, Grid2x2 } from "lucide-react"
-import { pluginExploreLink, websiteLink } from "@/utils/constant"
+import { pluginExploreLink, websiteLink } from "@/lib/variables/constant"
 import { useRedirectToBrowser } from "@/hooks/useState"
 
 export default function AlertBox({ children, title, className, actionButton }: { children: React.ReactNode, title: string, className?: string, actionButton?: React.ReactNode }) {

@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import PluginProvider from '@/components/plugins/PluginProvider';
 import Error from '@/components/ui/Error';
 import { useProjects } from '@/hooks/useProjects';
-import ProjectSetupProvider from '@/components/project/projectSetupProvider';
-import ProjectCard from '@/components/project/ProjectCard';
+import TemplateProvider from '@/components/DataProviders/templates/TemplateProvider';
+import ProjectSetupProvider from '@/components/DataProviders/project/projectSetupProvider';
+import ProjectCard from '@/components/DataProviders/project/ProjectCard';
 
 const FileUpload: React.FC = () => {
 
@@ -43,7 +43,7 @@ const FileUpload: React.FC = () => {
                 <div className='col-span-full flex justify-between items-center'>
                     <div className='flex gap-2'>
                         <ProjectSetupProvider />
-                        <PluginProvider />
+                        <TemplateProvider />
                     </div>
                     <div
                         className='max-w-sm rounded-full w-full flex items-center justify-center relative'>

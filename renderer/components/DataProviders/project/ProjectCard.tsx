@@ -1,8 +1,8 @@
 import { useHelfText } from '@/hooks/useState'
 import React, { useState } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 import { Loader, Loader2, MoreHorizontal, Pen, SaveAll, TextCursorInputIcon, Trash2, X } from 'lucide-react'
-import ImageLoader from '../plugins/ImageLoader'
+import ImageLoader from '../templates/ImageLoader'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from 'next/navigation'
 import { useProjects } from '@/hooks/useProjects'
-import { Input } from '../ui/input'
+import { Input } from '../../ui/input'
 import { toast } from 'sonner'
 
 export default function ProjectCard({ project, index }) {

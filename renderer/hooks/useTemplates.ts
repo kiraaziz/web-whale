@@ -19,7 +19,7 @@ interface Template {
     directory: string
 }
 
-interface PluginStore {
+interface TemplateStore {
     isUploading: boolean
     templates: Template[]
     fetchError: string | null
@@ -34,11 +34,11 @@ interface PluginStore {
     handleFileUpload: () => Promise<ProcessResult | undefined>
 }
 
-const usePlugins = create<PluginStore>((set, get) => ({
+const useTemplates = create<TemplateStore>((set, get) => ({
     isUploading: false,
     templates: [],
     fetchError: null,
-    uploadError: null,
+    uploadError: null, 
     isLoadingTemplates: true,
     
     setIsUploading: (value) => set({ isUploading: value }),
@@ -84,4 +84,4 @@ const usePlugins = create<PluginStore>((set, get) => ({
     }
 }))
 
-export default usePlugins
+export default useTemplates

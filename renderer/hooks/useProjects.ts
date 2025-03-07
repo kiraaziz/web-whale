@@ -1,13 +1,10 @@
 "use client"
-
 import { create } from 'zustand'
 import { toast } from 'sonner'
 
 interface Project {
-    // Add your project type definition here
     id: string
     name: string
-    // ... other project properties
 }
 
 interface ProjectState {

@@ -1,4 +1,11 @@
 import { toast } from "sonner"
+import { formatDistanceToNow } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+
+export const useTimeAgo = (dateString: Date) => {
+    const inputDate = new Date(dateString);
+    return formatDistanceToNow(inputDate, { addSuffix: true, includeSeconds: true, locale: enUS });
+}
 
 export const setState = (state: any, filed: any, value: any) => {
     state((pre: any) => {

@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import Logo from '@/components/providers/Logo';
-import { auther, linkesWithIcons, visitePages, websiteLink, metaData } from '@/utils/constant';
+import { auther, linkesWithIcons, visitePages, websiteLink, metaData } from '@/lib/variables/constant';
 import { useRedirectToBrowser } from '@/hooks/useState';
 
 export default function Layout({ children }) {
