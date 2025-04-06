@@ -3,7 +3,7 @@ import { Github, Twitch, Twitter } from 'lucide-react'
 const metaData = {
     name: "web whale",
     description: "Make your own website in seconds",
-    version: "delta-0.8"
+    version: "delta-1.0.0",
 }
 const websiteLink = 'https://webwhale.io'
 const visitePages = ["about", "contact", "privacy", "terms"]

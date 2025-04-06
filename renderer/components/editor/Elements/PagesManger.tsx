@@ -20,36 +20,6 @@ export function PageManager({ pages, selected, add, select, remove, setSelectedE
         })
     }
 
-    useEffect(() => {
-
-        const slugCounts = new Map<string, number>()
-        const uniquePageDetails = pages.map((v) => {
-            let baseName = v.getName()
-            let baseSlug = slugify(baseName, {
-                replacement: '-',
-                lower: true,
-                trim: true
-            }) || "index"
-
-            let finalSlug = baseSlug + ".html"
-            let counter = 1
-
-            while (slugCounts.has(finalSlug)) {
-                finalSlug = `${baseSlug}-${counter}.html`
-                counter++
-            }
-
-            slugCounts.set(finalSlug, 1)
-
-            return {
-                name: baseName,
-                slug: finalSlug
-            }
-        })
-
-        setPageDetails(uniquePageDetails)
-    }, [pages])
-
     return (
         <div className="gjs-custom-page-manager p-4">
             <div className=" flex items-center justify-between text-foreground/60">

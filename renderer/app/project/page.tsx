@@ -13,9 +13,11 @@ export default function page() {
   const [metaDate, setMetaDate] = useState<any>(null)
   const [template, setTemplate] = useState<any>(null)
   const [projectState, setProjectState] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useLayoutEffect(() => {
     const fetchMetaDateById = async () => {
+      setLoading(true)
       try {
         const metaDate = await (window as any).electron.invoke('get-project-by-id', id);
         if (metaDate) {
@@ -27,6 +29,8 @@ export default function page() {
       } catch (error) {
         toast.error('Error fetching metaDate:' + error.message)
         router.push("/")
+      }finally{
+        setLoading(false)
       }
     };
     fetchMetaDateById()
@@ -53,9 +57,9 @@ export default function page() {
     }
   }
 
-  if (!metaDate) return <div className='p-5 max-w-7xl mx-auto w-full h-[100svh]'><div className='flex justify-center items-center h-full w-full'>
+  if (!metaDate || loading) return <div className='p-5 max-w-7xl mx-auto w-full h-[100svh]'><div className='flex justify-center items-center h-full w-full'>
     <span className="loader"></span>
   </div></div>
 
-  return (<EditorLayout template={template} project={metaDate} projectState={projectState}/>)
+  return (<EditorLayout template={template} project={metaDate} projectState={projectState} />)
 }

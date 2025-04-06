@@ -13,12 +13,6 @@ import {
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowDown, ArrowUp, Ban, Plus, Trash, X } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
 import { useEffect, useState } from 'react'
 
 export function StyleManager({ sectors }: Omit<StylesResultProps, 'Container'>) {

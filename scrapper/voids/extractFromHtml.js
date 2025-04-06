@@ -5,7 +5,7 @@ const fetch = require('node-fetch-cache');
 const { generateRandomName } = require('./generateRandomName');
 const cheerio = require('cheerio');
 
-function extractUrlsFromHtml(html, rootDom) {
+function extractUrlsFromHtml(html, rootDom, ignore = []) {
     const cssLinks = html.match(/<link[^>]*rel="stylesheet"[^>]*href="([^"]*)"[^>]*>/g) || []
     const cssUrls = cssLinks.map(link => {
         const match = link.match(/href="([^"]*)"/)
@@ -25,8 +25,20 @@ function extractUrlsFromHtml(html, rootDom) {
     }).filter(url => url)
  
     const $ = cheerio.load(html);
-    const sections = $(rootDom).toArray().map(section => $.html(section));
+    const sections = rootDom.flatMap(dom => $(dom).toArray().map(section => $.html(section)));
  
+    ignore.forEach(rule => {
+        const [tag, action] = rule.split('-');
+        if (action === 'none') {
+            $(tag).remove();
+        } else if (action) {
+            $(tag).each((_, el) => {
+                const content = $(el).html();
+                $(el).replaceWith(`<${action}>${content}</${action}>`);
+            });
+        }
+    });
+    
     return { cssUrls, jsUrls, imgUrls, sections }
 }
 

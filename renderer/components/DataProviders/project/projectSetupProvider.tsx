@@ -21,6 +21,7 @@ export default function ProjectSetupProvider() {
     const [projectData, setProjectData] = useState({ projectName: '', selectedTemplate: '' });
     const { templates, isLoadingTemplates } = useTemplates();
     const { createProject, createProjectLoading } = useProjects();
+    const [open, setOpen] = useState(false)
 
     const handleCreate = async () => {
         if (!projectData.projectName) {
@@ -37,6 +38,8 @@ export default function ProjectSetupProvider() {
             typedName: projectData.projectName.trim()
         })
 
+        setOpen(false)
+
         if (project?._id) {
             router.push(`/project?id=${project._id}`)
         }
@@ -45,7 +48,7 @@ export default function ProjectSetupProvider() {
     if (isLoadingTemplates) return null
 
     return (
-        <AlertBox className='overflow-auto min-w-[20rem] max-h-[35rem] ease-in-out duration-300' title='Create Project'>
+        <AlertBox className='overflow-auto min-w-[20rem] max-h-[35rem] ease-in-out duration-300' title='Create Project' open={open} setOpen={setOpen}>
             <div className="space-y-4">
                 <div className="space-y-2">
                     <Input

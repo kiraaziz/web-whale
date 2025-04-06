@@ -8,7 +8,7 @@ const SetupSchema = z.object({
       isHeadless: z.boolean(),
       addImportant: z.boolean(),
       browserPath: z.string(),
-      rootDom: z.string(),
+      rootDom: z.array(z.string()),
     }),
     structure: z.object({
       css: z.array(z.string()),

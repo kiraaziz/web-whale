@@ -13,6 +13,7 @@ async function captureScreenshots(rootPath, isHeadless, browserPath, rootDom) {
     try {
         const files = fs.readdirSync(rootPath)
         const htmlFiles = files.filter(file => path.extname(file) === '.html')
+
         // Process each HTML file
         for (const file of htmlFiles) {
             const htmlFilePath = path.join(rootPath, file)
@@ -23,14 +24,19 @@ async function captureScreenshots(rootPath, isHeadless, browserPath, rootDom) {
 
             await page.goto(`file://${htmlFilePath}`)
 
-            await page.waitForSelector(rootDom)
-
-            const lastSection = await page.$(`${rootDom}:last-of-type`)
+            let lastSection
+            if(rootDom === "body"){
+                await page.waitForSelector("body")
+                lastSection = await page.$(`body:last-of-type`)
+            }else{
+                await page.waitForSelector("body>*")
+                lastSection = await page.$(`body>*:last-of-type`)
+            }
 
             if (lastSection) {
  
                 const boundingBox = await lastSection.boundingBox();
-                if (boundingBox && boundingBox.height > 0) {
+                if (boundingBox) {
                     // Take a screenshot of the last <section> only
                     await lastSection.screenshot({ path: imageFilePath });
                 } else {

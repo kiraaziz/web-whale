@@ -9,9 +9,9 @@ import {
 import { Button } from "../../ui/button"
 import {  Plus, Sparkles } from "lucide-react"
 
-export default function AlertBox({ children, title, className }: { children: React.ReactNode, title: string, className?: string }) {
+export default function AlertBox({ children, title, className, open, setOpen }: { children: React.ReactNode, title: string, className?: string, open: boolean, setOpen: (open: boolean) => void }) {
     return (
-        <Dialog>
+        <Dialog onOpenChange={setOpen} open={open}>
             <DialogTrigger>
                 <Button className='rounded-full '>
                     <Plus className='w-4 h-4' />

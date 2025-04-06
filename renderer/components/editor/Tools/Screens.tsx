@@ -84,7 +84,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                 >
                     <Layout size={20} />
                 </Button>
-                <Button
+                {/* <Button
                     size="icon"
                     variant={isPreview ? "default" : "outline"}
                     className={cn(
@@ -93,7 +93,7 @@ export default function Screens({ isPreview, setIsPreview, showEditors, setShowE
                     )}
                     onClick={handlePreview}>
                     <Eye size={20} />
-                </Button>
+                </Button> */}
                 <Button
                     size="icon"
                     variant={"outline"}

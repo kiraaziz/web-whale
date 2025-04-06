@@ -14,18 +14,21 @@ async function processTemplate({
     isHeadless,
     addImportant,
     browserPath,
-    rootDom
+    rootDom,
+    ignore = [],
 }) {
 
     try {
 
         const response = await fetch(url)
+        console.log("Fetching URL:", url)
+        console.log("Response status:", response.status)
         if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`)
 
         const html = await response.text()
 
         const { baseDir, cssDir, jsDir, imgDir } = createDirectories(baseDirPath)
-        const { cssUrls, jsUrls, imgUrls, sections } = extractUrlsFromHtml(html, rootDom)
+        const { cssUrls, jsUrls, imgUrls, sections } = extractUrlsFromHtml(html, rootDom, ignore)
 
         const cssResults = (await fetchCssFiles(cssUrls, url, cssDir, addImportant))
         const jsFiles = (await fetchJsFiles(jsUrls, url, jsDir)).filter(file => file).flatMap(result => result.fileName)
@@ -37,6 +40,7 @@ async function processTemplate({
 
         let processedSections = sections.map(section => {
             let processedSection = section
+
             imgFiles.forEach(img => {
                 if (img) {
                     processedSection = processedSection.replace(

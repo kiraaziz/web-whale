@@ -18,7 +18,7 @@ import {
   getProjectContent
 } from './functions/index'
 
-
+let mainWindow;
 const isProd = process.env.NODE_ENV === 'production'
 
 if (isProd) {
@@ -35,11 +35,11 @@ if (isProd) {
     callback({ path: filePath })
   })
 
-  const mainWindow = createWindow('main', {
+  mainWindow = createWindow('main', {
     width: 1400,
     height: 800,
     frame: false,
-    alwaysOnTop: true,
+    // alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     }
@@ -81,6 +81,24 @@ ipcMain.handle('update-project-content', async (event, data) => await updateProj
 ipcMain.handle('get-project-content', async (event, data) => await getProjectContent(data))
 ipcMain.handle('delete-project', async (event, data) => await deleteProject(data))
 
+// Then modify your handlers to use this reference:
+ipcMain.handle('window-minimize', () => {
+  if (mainWindow) mainWindow.minimize()
+  return true
+})
 
+ipcMain.handle('window-maximize', () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  }
+  return true
+})
 
-
+ipcMain.handle('window-close', () => {
+  if (mainWindow) mainWindow.close()
+  return true
+})
